@@ -5,6 +5,7 @@ import { fileName } from "./platform";
 import { useBeamer } from "./state/useBeamer";
 import { useCompetitionFile, type SaveState } from "./state/useCompetitionFile";
 import { CompetitionPage, initialRunState, type RunState } from "./ui/CompetitionPage";
+import { useEditGuard } from "./ui/EditGuard";
 import { OverviewPage } from "./ui/OverviewPage";
 import { ResultsPage } from "./ui/ResultsPage";
 import { StartListsPage } from "./ui/StartListsPage";
@@ -43,6 +44,7 @@ export default function App() {
   const [runState, setRunState] = useState<RunState>(initialRunState);
   const competitionId = competition?.id;
   useEffect(() => setRunState(initialRunState), [competitionId]);
+  const guard = useEditGuard(competition, file.update, page);
 
   // Update-Hinweise liegen außerhalb der Seiten, damit sie beim Öffnen/Schließen erhalten bleiben.
   const notices = (
@@ -109,15 +111,17 @@ export default function App() {
         )}
       </nav>
       <main className="page">
-        {page === "overview" && <OverviewPage competition={competition} update={file.update} />}
-        {page === "teams" && <TeamsPage competition={competition} update={file.update} />}
-        {page === "startlists" && <StartListsPage competition={competition} update={file.update} />}
+        {page === "overview" && <OverviewPage competition={competition} update={guard.update} />}
+        {page === "teams" && <TeamsPage competition={competition} update={guard.update} />}
+        {page === "startlists" && <StartListsPage competition={competition} update={guard.update} />}
+        {guard.dialog}
         {page === "results" && <ResultsPage competition={competition} update={file.update} />}
         {page === "competition" && (
           <CompetitionPage
             competition={competition}
             update={file.update}
             onGoToStartLists={() => setPage("startlists")}
+            onGoToResults={() => setPage("results")}
             beamer={beamer}
             runState={runState}
             setRunState={setRunState}

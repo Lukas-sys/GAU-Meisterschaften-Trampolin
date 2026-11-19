@@ -49,6 +49,8 @@ export interface ConfirmedFinal {
   /** Finalmannschaften in Vorkampf-Reihenfolge, beste zuerst. */
   teamIds: string[];
   confirmedAt: string;
+  /** Vorschlag nach der Regel zum Zeitpunkt der Bestätigung; die Auswahl kann davon abweichen. */
+  basedOn?: string[];
 }
 
 export function newId(): string {

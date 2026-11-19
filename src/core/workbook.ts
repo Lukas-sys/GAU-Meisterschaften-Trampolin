@@ -6,7 +6,7 @@ import { athletePflichtDeduction, teamLabel, type Competition } from "./competit
 import { classStartList } from "./draw";
 import { classResults } from "./export";
 import { roundScore } from "./math";
-import { getRoutine, ROUTINE_STATE_LABELS, routineBreakdown, routineState } from "./results";
+import { completedElementsOf, getRoutine, ROUTINE_STATE_LABELS, routineBreakdown, routineState } from "./results";
 import type { ClassId, RoundKind } from "./types";
 import { ROUND_LABELS } from "./validation";
 
@@ -166,7 +166,7 @@ function routinesSheet(competition: Competition): WorkbookSheet {
           round === "pflicht" ? (row.pflichtDeduction ?? null) : null,
           absent ? null : (entry?.otherDeduction ?? null),
           { value: points(breakdown?.total), bold: true },
-          absent ? null : (entry?.completedElements ?? null),
+          absent || state === "open" ? null : completedElementsOf(entry),
         ]);
       }
     }

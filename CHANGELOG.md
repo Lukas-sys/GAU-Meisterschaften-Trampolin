@@ -4,6 +4,18 @@ Alle wichtigen Änderungen an diesem Projekt. Format nach [Keep a Changelog](htt
 
 ## [Unveröffentlicht]
 
+### Hinzugefügt
+- Meldungen lassen sich wieder drucken: alle Mannschaften, die der gewählten Klasse oder eine einzelne, wahlweise eine oder zwei Mannschaften pro Seite oder alle hintereinander. Jahrgang, Pflichtstufe und Abzug, Startplätze und eine Unterschriftszeile sind einzeln abwählbar.
+- Vor jedem Druck (Meldungen, Startlisten, Ergebnisliste) öffnet sich ein Dialog, in dem du einstellst, was auf das Blatt kommt. Die letzte Auswahl wird gemerkt.
+- Die Ergebnisliste kann alle Einzelnoten enthalten: E1 bis E4 (gestrichene in Klammern), HD1 und HD2, D, Abzüge, „ab“ und Punkte je Durchgang.
+- Fehlt bei vier Kampfrichter:innen genau eine Haltungsnote, fragt das Programm beim Weiterschalten, ob sie ergänzt werden soll. Eingesetzt wird der mittlere Wert der übrigen drei. Die ergänzte Note ist markiert.
+- Beim letzten Springer eines Durchgangs heißt der Knopf „Fertig“. Danach zeigt ein Dialog, ob noch Übungen offen sind, und bietet an, mit dem nächsten Durchgang weiterzumachen oder zu den Ergebnissen zu wechseln.
+- Sobald Wertungen eingetragen sind, fragt das Programm vor Änderungen an Übersicht, Meldungen und Startlisten nach, ob sie wirklich ausgeführt werden sollen (einmal je Seitenbesuch).
+
+### Geändert
+- Die Finalauswahl ist frei änderbar: Der Vorschlag nach der 2/3-Regel ist vorausgewählt, Mannschaften lassen sich aber über die Finalgrenze ziehen oder mit „Ins Finale“ und „Raus“ verschieben, bis hin zu allen Mannschaften. Bestätigte Finalisten lassen sich über „Auswahl ändern“ nachträglich bearbeiten.
+- „ab“ gilt als 10, wenn nichts eingetragen ist, auch in der Ergebnisliste und im Excel-Export.
+
 ## [1.2.0] – 2026-11-19
 
 ### Geändert

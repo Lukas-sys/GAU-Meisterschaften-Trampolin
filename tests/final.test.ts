@@ -209,3 +209,47 @@ describe("Beamer", () => {
     expect(view.progress).toEqual({ scored: 8, total: 8 });
   });
 });
+
+describe("Finalauswahl von Hand", () => {
+  it("erlaubt eine Mannschaft mehr als die 2/3-Regel und speichert in Vorkampf-Reihenfolge", () => {
+    const { c, id } = setup({ A: 14, B: 13, C: 12, D: 11, E: 10 });
+    const confirmed = confirmFinalists(c, "OK", [id("D"), id("A"), id("C"), id("B")], new Date("2026-11-21T12:00:00Z"));
+    expect(confirmed.finals?.OK?.teamIds).toEqual([id("A"), id("B"), id("C"), id("D")]);
+    expect(confirmed.finals?.OK?.basedOn).toEqual([id("A"), id("B"), id("C")]);
+    // Abweichung vom Vorschlag gilt nicht als „Vorkampf hat sich geändert“.
+    expect(finalProposal(confirmed, "OK")!.outdated).toBe(false);
+    expect(finalTeams(confirmed, "OK").map((t) => t.club)).toEqual(["D", "C", "B", "A"]);
+  });
+
+  it("kann auch alle Mannschaften ins Finale nehmen", () => {
+    const { c, teams } = setup({ A: 14, B: 13, C: 12 });
+    const confirmed = confirmFinalists(c, "OK", teams.map((t) => t.id));
+    expect(finalStandings(confirmed, "OK").every((s) => s.finalist)).toBe(true);
+  });
+});
+
+describe("Fehlende Haltungsnote und „ab“", () => {
+  const panel = { executionJudges: 4, hdJudges: 2 as const, timeOfFlight: false };
+
+  it("ergänzt eine fehlende von vier Noten mit dem mittleren Wert der übrigen drei", async () => {
+    const { missingExecutionFill } = await import("../src/core");
+    const entry = { status: "entered" as const, execution: [7.4, null, 6.9, 7.1], hd: [9.5, 9.6] };
+    expect(missingExecutionFill(entry, panel)).toEqual({ index: 1, value: 7.1 });
+  });
+
+  it("fragt nicht bei zwei fehlenden Noten, vollständiger Eingabe oder drei Richter:innen", async () => {
+    const { missingExecutionFill } = await import("../src/core");
+    expect(missingExecutionFill({ status: "entered", execution: [7, null, null, 7], hd: [] }, panel)).toBeNull();
+    expect(missingExecutionFill({ status: "entered", execution: [7, 7, 7, 7], hd: [] }, panel)).toBeNull();
+    expect(
+      missingExecutionFill({ status: "entered", execution: [7, null, 7], hd: [] }, { ...panel, executionJudges: 3 }),
+    ).toBeNull();
+    expect(missingExecutionFill({ status: "absent", execution: [], hd: [] }, panel)).toBeNull();
+  });
+
+  it("nimmt bei leerem „ab“ 10 an", async () => {
+    const { completedElementsOf } = await import("../src/core");
+    expect(completedElementsOf({ status: "entered", execution: [], hd: [] })).toBe(10);
+    expect(completedElementsOf({ status: "entered", execution: [], hd: [], completedElements: 7 })).toBe(7);
+  });
+});

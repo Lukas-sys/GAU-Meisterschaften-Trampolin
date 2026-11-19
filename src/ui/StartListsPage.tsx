@@ -12,7 +12,8 @@ import {
   type Competition,
   type RoundKind,
 } from "../core";
-import { PrintStartLists, type PrintJob } from "./PrintStartLists";
+import { PrintDialog } from "./PrintDialog";
+import { PrintStartLists, START_LIST_PRINT_OPTIONS, startListColumns, type PrintJob } from "./PrintStartLists";
 import { StartListTable } from "./StartListTable";
 import { usePrint } from "./usePrint";
 
@@ -45,9 +46,8 @@ export function StartListsPage({ competition, update }: Props) {
     return validateCompetition(competition).filter((i) => i.severity === "error" && i.teamId && ids.has(i.teamId));
   }, [competition, classId]);
 
-  function print(jobs: PrintJob[]) {
-    printContent(<PrintStartLists competition={competition} jobs={jobs} />);
-  }
+  const [printJobs, setPrintJobs] = useState<PrintJob[] | null>(null);
+  const print = (jobs: PrintJob[]) => setPrintJobs(jobs);
 
   function draw() {
     update((c) => drawClass(c, classId));
@@ -232,6 +232,17 @@ export function StartListsPage({ competition, update }: Props) {
         </section>
       </div>
 
+      {printJobs && (
+        <PrintDialog
+          id="startlists"
+          title={printJobs.length > 1 ? "Alle Startlisten drucken" : "Startliste drucken"}
+          options={START_LIST_PRINT_OPTIONS}
+          onClose={() => setPrintJobs(null)}
+          onPrint={(settings) =>
+            printContent(<PrintStartLists competition={competition} jobs={printJobs} columns={startListColumns(settings)} />)
+          }
+        />
+      )}
       {portal}
     </div>
   );

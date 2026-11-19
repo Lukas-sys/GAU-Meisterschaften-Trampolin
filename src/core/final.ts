@@ -12,7 +12,7 @@ export interface FinalProposal {
   proposedIds: string[];
   /** Punktgleich an der Finalgrenze; muss vor dem Bestätigen entschieden werden. */
   tiedAtCutoff: string[];
-  /** Bestätigte Auswahl weicht vom aktuellen Vorschlag ab (z. B. nach einer Korrektur). */
+  /** Der Vorschlag hat sich seit der Bestätigung geändert (z. B. nach einer Korrektur im Vorkampf). */
   outdated: boolean;
 }
 
@@ -27,17 +27,33 @@ export function finalProposal(competition: Competition, classId: ClassId): Final
     count: finalistCount(standings.length, rule),
     proposedIds: finalistIds,
     tiedAtCutoff,
-    outdated: confirmed !== undefined && confirmed.teamIds.join() !== finalistIds.join(),
+    outdated: confirmed !== undefined && (confirmed.basedOn ?? confirmed.teamIds).join() !== finalistIds.join(),
   };
 }
 
+/**
+ * Bestätigt die Finalmannschaften. Die Auswahl darf vom Vorschlag abweichen (z. B. eine
+ * Mannschaft mehr); `basedOn` merkt sich den Vorschlag, um spätere Änderungen zu erkennen.
+ * Gespeichert wird in Vorkampf-Reihenfolge, beste zuerst.
+ */
 export function confirmFinalists(
   competition: Competition,
   classId: ClassId,
   teamIds: string[],
   now: Date = new Date(),
 ): Competition {
-  return { ...competition, finals: { ...competition.finals, [classId]: { teamIds, confirmedAt: now.toISOString() } } };
+  const standings = vorkampfStandings(competition, classId);
+  const rank = (id: string) => {
+    const i = standings.findIndex((s) => s.teamId === id);
+    return i < 0 ? Number.MAX_SAFE_INTEGER : i;
+  };
+  const ordered = [...new Set(teamIds)].sort((a, b) => rank(a) - rank(b));
+  const rule = competition.classes[classId].finalQualification;
+  const basedOn = rule ? selectFinalists(standings, rule).finalistIds : ordered;
+  return {
+    ...competition,
+    finals: { ...competition.finals, [classId]: { teamIds: ordered, confirmedAt: now.toISOString(), basedOn } },
+  };
 }
 
 export function resetFinalists(competition: Competition, classId: ClassId): Competition {

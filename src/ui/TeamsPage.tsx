@@ -4,6 +4,9 @@ import { canImportSpreadsheets } from "../platform";
 import { ImportDialog, loadMeldeboegen, type PendingMeldung } from "./ImportDialog";
 import { IssueList } from "./IssueList";
 import { NewTeamDialog } from "./NewTeamDialog";
+import { PrintDialog } from "./PrintDialog";
+import { PrintTeams, selectTeams, teamPrintOptions } from "./PrintTeams";
+import { usePrint } from "./usePrint";
 import { TeamCard } from "./TeamCard";
 import { KnownClubs } from "./TeamFields";
 
@@ -37,6 +40,8 @@ export function TeamsPage({ competition, update }: Props) {
   const [creating, setCreating] = useState(false);
   const [importing, setImporting] = useState<{ loaded: PendingMeldung[]; failed: string[] } | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [printing, setPrinting] = useState(false);
+  const { print, portal } = usePrint();
 
   const issues = useMemo(() => validateCompetition(competition), [competition]);
   const teams = competition.teams.filter((t) => t.classId === classId);
@@ -104,6 +109,9 @@ export function TeamsPage({ competition, update }: Props) {
             {allCollapsed ? "Alle ausklappen" : "Alle einklappen"}
           </button>
         )}
+        <button className="button-secondary" onClick={() => setPrinting(true)} disabled={competition.teams.length === 0}>
+          Drucken
+        </button>
         <button
           className="button-secondary"
           onClick={() => void startImport()}
@@ -186,6 +194,24 @@ export function TeamsPage({ competition, update }: Props) {
           }}
         />
       )}
+      {printing && (
+        <PrintDialog
+          id="teams"
+          title="Meldungen drucken"
+          options={teamPrintOptions(competition, classId)}
+          onClose={() => setPrinting(false)}
+          onPrint={(settings) =>
+            print(
+              <PrintTeams
+                competition={competition}
+                teams={selectTeams(competition, classId, settings)}
+                settings={settings}
+              />,
+            )
+          }
+        />
+      )}
+      {portal}
     </div>
   );
 }

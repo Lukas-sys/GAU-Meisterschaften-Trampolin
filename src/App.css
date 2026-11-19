@@ -1202,3 +1202,190 @@ td.has-deduction {
 .beamer-controls select {
   width: auto;
 }
+
+/* Wettkampf: ergänzte Haltungsnote und Dialog am Ende eines Durchgangs */
+.score-input.filled {
+  background: var(--warning-bg, #fff7e0);
+  font-style: italic;
+}
+.slide-filled {
+  margin: 0;
+}
+.finish-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Finalauswahl: Mannschaften über die Finalgrenze ziehen */
+.final-zone-title {
+  font-size: 0.95rem;
+  margin: 0.75rem 0 0;
+}
+.drop-zone {
+  min-height: 2.4rem;
+  border-radius: var(--radius);
+  margin: 0.25rem 0;
+}
+.drop-zone.over {
+  background: #eaf2fb;
+  outline: 2px dashed var(--primary);
+}
+.team-order li.draggable {
+  cursor: grab;
+  padding-left: 0.25rem;
+}
+.team-order li.dragging {
+  opacity: 0.4;
+}
+.drag-handle {
+  color: var(--muted);
+}
+.drop-empty {
+  justify-content: center;
+  border-bottom: none !important;
+}
+.final-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.final-divider::before,
+.final-divider::after {
+  content: "";
+  flex: 1;
+  border-top: 2px dashed var(--primary);
+}
+.small-button {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+/* Druckdialog */
+.print-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: min(26rem, 80vw);
+}
+.print-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.print-choice select {
+  font-weight: normal;
+}
+
+/* Ergebnisliste mit Einzelnoten */
+.notes-row td {
+  padding-top: 0;
+}
+.notes-table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  margin: 0 0 0.3rem;
+}
+.notes-table th {
+  font-weight: 600;
+  color: var(--muted);
+  text-align: right;
+  padding: 0 0.5rem 0 0;
+  border: none;
+}
+.notes-table td {
+  text-align: right;
+  padding: 0 0.5rem 0 0;
+  border: none !important;
+}
+.notes-table th,
+.notes-table td {
+  width: 3rem;
+}
+.notes-table th:first-child,
+.notes-table td:first-child {
+  text-align: left;
+  width: 3.8rem;
+}
+.notes-head-hidden th {
+  visibility: hidden;
+  line-height: 0;
+  font-size: 0;
+}
+.print-legend {
+  font-size: 8pt;
+  color: #555;
+  margin-top: 2mm;
+}
+@media print {
+  .print-root .results tr.notes-row td {
+    border-bottom: none;
+    padding-top: 0;
+    padding-bottom: 1mm;
+  }
+  .print-root .notes-table {
+    font-size: 8pt;
+  }
+  .print-root .table .notes-table th,
+  .print-root .table .notes-table td {
+    border: none;
+    padding: 0 2mm 0 0;
+  }
+  .print-root .results.with-notes tbody {
+    break-inside: auto;
+  }
+  .print-root .results.with-notes tr.athlete-row {
+    break-after: avoid;
+  }
+  .print-root .table .notes-table th,
+  .print-root .table .notes-table td {
+    width: 11mm;
+  }
+  .print-root .table .notes-table th:first-child,
+  .print-root .table .notes-table td:first-child {
+    width: 14mm;
+  }
+  .print-root .table .notes-table th:last-child,
+  .print-root .table .notes-table td:last-child {
+    width: 16mm;
+  }
+}
+
+/* Druck: Meldungen und Startlisten-Optionen */
+.print-team h2 {
+  font-size: 13pt;
+  margin: 0 0 2mm;
+}
+.print-team-class {
+  font-weight: normal;
+  color: #555;
+}
+.print-team + .print-team {
+  margin-top: 8mm;
+}
+.print-signature {
+  margin-top: 12mm;
+  width: 70mm;
+  border-top: 0.5px solid #000;
+  font-size: 8pt;
+  padding-top: 1mm;
+}
+.score-col {
+  min-width: 25mm;
+}
+@media print {
+  .print-teams.per-page-list .print-team {
+    break-inside: avoid;
+  }
+}

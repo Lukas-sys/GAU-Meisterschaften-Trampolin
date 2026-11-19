@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import {
+  DEFAULT_COMPLETED_ELEMENTS,
   emptyRoutine,
   formatPoints,
   getRoutine,
+  missingExecutionFill,
   ROUND_LABELS,
   ROUTINE_STATE_LABELS,
   routineBreakdown,
@@ -16,6 +18,7 @@ import {
   type RoutineEntry,
   type StartListRow,
 } from "../core";
+import { Modal } from "./Modal";
 import { NumberInput } from "./NumberInput";
 
 interface Props {
@@ -27,10 +30,12 @@ interface Props {
   hasNext: boolean;
   onPrevious: () => void;
   onNext: () => void;
+  /** Beim letzten Springer: statt „Weiter“ gibt es „Fertig“. */
+  onFinish: () => void;
 }
 
 /** Eine Folie: wer springt, Eingabe der Noten, sofort berechnete Punkte. */
-export function RoutineSlide({ competition, row, round, update, hasPrevious, hasNext, onPrevious, onNext }: Props) {
+export function RoutineSlide({ competition, row, round, update, hasPrevious, hasNext, onPrevious, onNext, onFinish }: Props) {
   const { athlete, team } = row;
   const panel = competition.panel;
   const stored = getRoutine(competition, round, athlete.id);
@@ -40,6 +45,8 @@ export function RoutineSlide({ competition, row, round, update, hasPrevious, has
   const issues = routineIssues(stored, panel);
   const deduction = routineDeduction(competition, athlete, round);
   const [confirmClear, setConfirmClear] = useState(false);
+  /** Fehlende Haltungsnote: wartet auf Bestätigung, danach geht es mit `then` weiter. */
+  const [pendingFill, setPendingFill] = useState<{ index: number; value: number; then: () => void } | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -55,16 +62,36 @@ export function RoutineSlide({ competition, row, round, update, hasPrevious, has
   const setNote = (kind: "execution" | "hd", i: number, value: number | undefined) => {
     const notes = [...entry[kind]];
     notes[i] = value ?? null;
-    save({ [kind]: notes });
+    if (kind === "execution" && entry.filledExecution?.includes(i)) {
+      save({ execution: notes, filledExecution: entry.filledExecution.filter((f) => f !== i) });
+    } else save({ [kind]: notes });
   };
+
+  /** Vor dem Weiterschalten: fehlt genau eine Haltungsnote, erst fragen, ob sie ergänzt wird. */
+  const leave = (then: () => void) => {
+    const fill = missingExecutionFill(stored, panel);
+    if (fill) setPendingFill({ ...fill, then });
+    else then();
+  };
+  const next = () => leave(hasNext ? onNext : onFinish);
+
+  function applyFill() {
+    if (!pendingFill) return;
+    const { index, value, then } = pendingFill;
+    const notes = [...entry.execution];
+    notes[index] = value;
+    save({ execution: notes, filledExecution: [...(entry.filledExecution ?? []), index] });
+    setPendingFill(null);
+    then();
+  }
 
   /** Enter springt zur nächsten Übung, Umschalt+Enter zur vorherigen. */
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key !== "Enter" || !(event.target instanceof HTMLInputElement)) return;
     event.preventDefault();
     if (event.shiftKey) {
-      if (hasPrevious) onPrevious();
-    } else if (hasNext) onNext();
+      if (hasPrevious) leave(onPrevious);
+    } else next();
   }
 
   const fieldClass = (field: string) => {
@@ -113,7 +140,9 @@ export function RoutineSlide({ competition, row, round, update, hasPrevious, has
                 <NumberInput
                   decimal
                   ariaLabel={`E${i + 1}`}
-                  className={fieldClass(`E${i + 1}`)}
+                  className={
+                    entry.filledExecution?.includes(i) ? `${fieldClass(`E${i + 1}`)} filled` : fieldClass(`E${i + 1}`)
+                  }
                   value={entry.execution[i] ?? undefined}
                   onChange={(v) => setNote("execution", i, v)}
                 />
@@ -171,10 +200,11 @@ export function RoutineSlide({ competition, row, round, update, hasPrevious, has
                 onChange={(v) => save({ otherDeduction: v })}
               />
             </label>
-            <label title="Anzahl gewerteter Sprünge, nur Information">
+            <label title="Anzahl gewerteter Sprünge, nur Information. Leer = 10.">
               ab
               <NumberInput
                 ariaLabel="ab"
+                placeholder={String(DEFAULT_COMPLETED_ELEMENTS)}
                 className={fieldClass("ab")}
                 value={entry.completedElements}
                 onChange={(v) => save({ completedElements: v })}
@@ -182,6 +212,13 @@ export function RoutineSlide({ competition, row, round, update, hasPrevious, has
             </label>
           </fieldset>
         </div>
+      )}
+
+      {entry.filledExecution && entry.filledExecution.length > 0 && state !== "absent" && (
+        <p className="muted small slide-filled">
+          {entry.filledExecution.map((i) => `E${i + 1}`).join(", ")} fehlte und wurde mit dem mittleren Wert der
+          übrigen Haltungsnoten ergänzt.
+        </p>
       )}
 
       {issues.length > 0 && (
@@ -216,7 +253,7 @@ export function RoutineSlide({ competition, row, round, update, hasPrevious, has
       )}
 
       <footer className="slide-footer">
-        <button className="button-secondary" onClick={onPrevious} disabled={!hasPrevious}>
+        <button className="button-secondary" onClick={() => leave(onPrevious)} disabled={!hasPrevious}>
           ◀ Zurück
         </button>
         {state !== "absent" && (
@@ -247,10 +284,31 @@ export function RoutineSlide({ competition, row, round, update, hasPrevious, has
             </button>
           ))}
         <div className="spacer" />
-        <button onClick={onNext} disabled={!hasNext} title="Enter">
-          Weiter ▶
+        <button onClick={next} title="Enter">
+          {hasNext ? "Weiter ▶" : "Fertig ✓"}
         </button>
       </footer>
+      {pendingFill && (
+        <Modal
+          title="Haltungsnote fehlt"
+          onClose={() => setPendingFill(null)}
+          footer={
+            <>
+              <button className="button-secondary" onClick={() => setPendingFill(null)}>
+                Zurück zur Eingabe
+              </button>
+              <button autoFocus onClick={applyFill}>
+                Ergänzen und {hasNext ? "weiter" : "fertig"}
+              </button>
+            </>
+          }
+        >
+          <p>
+            E{pendingFill.index + 1} ist leer. Von den übrigen Haltungsnoten fallen die höchste und die niedrigste weg,
+            eingesetzt wird der mittlere Wert: <strong>{formatPoints(pendingFill.value).replace(/0$/, "")}</strong>.
+          </p>
+        </Modal>
+      )}
     </section>
   );
 }

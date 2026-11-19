@@ -13,9 +13,17 @@ export interface RoutineEntry {
   difficulty?: number;
   timeOfFlight?: number;
   otherDeduction?: number;
-  /** Anzahl gewerteter Sprünge („ab“). Nur Information. */
+  /** Anzahl gewerteter Sprünge („ab“). Nur Information; leer heißt 10. */
   completedElements?: number;
+  /** Haltungsnoten (Positionen), die automatisch ergänzt wurden, weil eine Wertung fehlte. */
+  filledExecution?: number[];
 }
+
+/** „ab“, wenn nichts eingetragen ist: alle 10 Sprünge geturnt. */
+export const DEFAULT_COMPLETED_ELEMENTS = 10;
+
+export const completedElementsOf = (entry: RoutineEntry | undefined): number =>
+  entry?.completedElements ?? DEFAULT_COMPLETED_ELEMENTS;
 
 export type RoutineState = "open" | "incomplete" | "scored" | "absent";
 
@@ -78,6 +86,24 @@ export interface RoutineIssue {
 }
 
 const isTenth = (v: number) => Math.abs(v * 10 - Math.round(v * 10)) < 1e-9;
+
+/**
+ * Fehlt bei vier (oder mehr) Kampfrichter:innen genau eine Haltungsnote, wird sie ergänzt:
+ * aus den übrigen Noten fallen höchste und niedrigste weg, der Mittelwert des Rests wird
+ * eingesetzt. Bei drei übrigen Noten ist das einfach die mittlere.
+ */
+export function missingExecutionFill(
+  entry: RoutineEntry | undefined,
+  panel: JudgePanel,
+): { index: number; value: number } | null {
+  if (!entry || entry.status === "absent" || panel.executionJudges < 4) return null;
+  const { execution } = requiredNotes(entry, panel);
+  const missing = execution.map((n, i) => (isNumber(n) ? -1 : i)).filter((i) => i >= 0);
+  if (missing.length !== 1) return null;
+  const others = execution.filter(isNumber).sort((a, b) => a - b).slice(1, -1);
+  const value = roundScore(others.reduce((sum, n) => sum + n, 0) / others.length);
+  return { index: missing[0], value };
+}
 
 /** Plausibilitätsprüfung der Eingabe; Fehler verhindern nicht das Speichern, sollen aber auffallen. */
 export function routineIssues(entry: RoutineEntry | undefined, panel: JudgePanel): RoutineIssue[] {

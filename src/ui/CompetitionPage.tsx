@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import {
   classStartList,
   classTeamOrder,
@@ -20,6 +20,7 @@ import {
 import { openBeamerWindow } from "../beamerChannel";
 import type { BeamerControl } from "../state/useBeamer";
 import { LiveTable } from "./LiveTable";
+import { Modal } from "./Modal";
 import { RoutineSlide } from "./RoutineSlide";
 import { availableRounds } from "./StartListsPage";
 
@@ -27,6 +28,7 @@ interface Props {
   competition: Competition;
   update: (change: (c: Competition) => Competition) => void;
   onGoToStartLists: () => void;
+  onGoToResults: () => void;
   beamer: BeamerControl;
   runState: RunState;
   setRunState: Dispatch<SetStateAction<RunState>>;
@@ -46,7 +48,16 @@ const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLInputElement || target instanceof HTMLSelectElement || target instanceof HTMLTextAreaElement;
 
 /** Wettkampfmodus: eine Folie je Übung, Startreihenfolge zum Springen und Live-Tabelle. */
-export function CompetitionPage({ competition, update, onGoToStartLists, beamer, runState, setRunState }: Props) {
+export function CompetitionPage({
+  competition,
+  update,
+  onGoToStartLists,
+  onGoToResults,
+  beamer,
+  runState,
+  setRunState,
+}: Props) {
+  const [finished, setFinished] = useState(false);
   // Liegt in App, damit Klasse, Durchgang und Übung beim Seitenwechsel erhalten bleiben.
   const { classId, round: selectedRound, positions } = runState;
   const setClassId = (next: ClassId) => setRunState((s) => ({ ...s, classId: next }));
@@ -188,6 +199,7 @@ export function CompetitionPage({ competition, update, onGoToStartLists, beamer,
               hasNext={index < rows.length - 1}
               onPrevious={() => goTo(index - 1)}
               onNext={() => goTo(index + 1)}
+              onFinish={() => setFinished(true)}
             />
             <NextUp rows={rows} index={index} />
             <p className="muted small keyboard-hint">
@@ -196,6 +208,28 @@ export function CompetitionPage({ competition, update, onGoToStartLists, beamer,
           </div>
           <LiveTable competition={competition} classId={classId} round={round} highlightTeamId={current.team.id} />
         </div>
+      )}
+      {finished && (
+        <FinishDialog
+          competition={competition}
+          classId={classId}
+          round={round}
+          rows={rows}
+          states={states}
+          onClose={() => setFinished(false)}
+          onJump={(i) => {
+            setFinished(false);
+            goTo(i);
+          }}
+          onContinue={(nextClass, nextRound) => {
+            setFinished(false);
+            setRunState((s) => ({ ...s, classId: nextClass, round: nextRound }));
+          }}
+          onResults={() => {
+            setFinished(false);
+            onGoToResults();
+          }}
+        />
       )}
     </div>
   );
@@ -271,5 +305,91 @@ function NextUp({ rows, index }: { rows: StartListRow[]; index: number }) {
         </span>
       ))}
     </p>
+  );
+}
+
+/** Dialog nach dem letzten Springer eines Durchgangs: Was fehlt noch, und wie geht es weiter? */
+function FinishDialog({
+  competition,
+  classId,
+  round,
+  rows,
+  states,
+  onClose,
+  onJump,
+  onContinue,
+  onResults,
+}: {
+  competition: Competition;
+  classId: ClassId;
+  round: RoundKind;
+  rows: StartListRow[];
+  states: ReturnType<typeof routineState>[];
+  onClose: () => void;
+  onJump: (index: number) => void;
+  onContinue: (classId: ClassId, round: RoundKind) => void;
+  onResults: () => void;
+}) {
+  const open = rows.map((row, i) => ({ row, i })).filter(({ i }) => states[i] === "open" || states[i] === "incomplete");
+  const name = competition.classes[classId].name;
+
+  // Durchgänge mit offenen Übungen: zuerst die nächsten der gleichen Klasse, dann die anderen Klassen.
+  const classIds = Object.keys(competition.classes) as ClassId[];
+  const ordered = [classId, ...classIds.filter((c) => c !== classId)];
+  const nextUp = ordered
+    .flatMap((c) =>
+      availableRounds(competition, c)
+        .filter((r) => !(c === classId && r === round))
+        .filter((r) =>
+          classStartList(competition, c, r).some((row) => {
+            const state = routineState(getRoutine(competition, r, row.athlete.id), competition.panel);
+            return state === "open" || state === "incomplete";
+          }),
+        )
+        .map((r) => ({ classId: c, round: r })),
+    )
+    .slice(0, 3);
+  const waitingForFinal =
+    competition.classes[classId].rounds.includes("finale") && !competition.finals?.[classId] && round !== "finale";
+
+  return (
+    <Modal
+      title={`${name} · ${ROUND_LABELS[round]}`}
+      onClose={onClose}
+      footer={
+        <button className="button-secondary" onClick={onClose}>
+          Hier bleiben
+        </button>
+      }
+    >
+      {open.length === 0 ? (
+        <p>Alle Übungen dieses Durchgangs sind gewertet.</p>
+      ) : (
+        <div className="alert alert-warning small">
+          <p className="tight">
+            Noch nicht fertig gewertet:{" "}
+            {open
+              .map(({ row }) => `Nr. ${row.startNumber} ${row.athlete.firstName} ${row.athlete.lastName}`.trim())
+              .join(", ")}
+          </p>
+          <button className="button-secondary" onClick={() => onJump(open[0].i)}>
+            Zur ersten offenen Übung
+          </button>
+        </div>
+      )}
+      <div className="finish-actions">
+        {nextUp.map((n) => (
+          <button key={`${n.classId}:${n.round}`} onClick={() => onContinue(n.classId, n.round)}>
+            Weiter mit {competition.classes[n.classId].name} · {ROUND_LABELS[n.round]}
+          </button>
+        ))}
+        <button className={nextUp.length > 0 ? "button-secondary" : undefined} onClick={onResults}>
+          Zu den Ergebnissen
+        </button>
+      </div>
+      {waitingForFinal && open.length === 0 && (
+        <p className="muted small">Für das Finale die Finalisten unter „Ergebnisse“ bestätigen.</p>
+      )}
+    </Modal>
   );
 }
