@@ -4,6 +4,8 @@ Alle wichtigen Änderungen an diesem Projekt. Format nach [Keep a Changelog](htt
 
 ## [Unveröffentlicht]
 
+## [1.1.2] – 2026-11-19
+
 ### Behoben
 - Im Wettkampf bleiben Klasse, Durchgang und die aktuelle Übung erhalten, wenn man kurz auf eine andere Seite wechselt (z. B. um eine Meldung nachzuschauen). Erst beim Schließen des Wettkampfs geht es wieder von vorne los.
 
