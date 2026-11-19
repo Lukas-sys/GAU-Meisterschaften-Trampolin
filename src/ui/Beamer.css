@@ -47,6 +47,7 @@
   gap: 3vw;
 }
 .beamer-left {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 2.5vh;
@@ -117,13 +118,67 @@
   letter-spacing: 0.06em;
   color: var(--b-muted);
 }
-.beamer-previous,
 .beamer-next {
   font-size: 1.1em;
 }
-.beamer-previous-total {
-  margin-left: 0.6em;
+/* Leiste unten: letzte Wertung mit allen Einzelnoten */
+.beamer-latest {
+  background: var(--b-surface);
+  border-radius: 1.2vw;
+  padding: 1.6vh 2.5vw 2vh;
+  font-variant-numeric: tabular-nums;
+}
+.beamer-latest-who {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  font-size: 1.2em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.beamer-latest-who .beamer-label {
+  font-size: 0.6em;
+}
+.beamer-latest-who .beamer-startnumber {
+  min-width: 1.8em;
+  font-size: 0.8em;
+}
+.beamer-latest-scores {
+  display: flex;
+  align-items: flex-end;
+  gap: 2.5vw;
+  margin-top: 1.2vh;
+}
+.beamer-latest-scores > .beamer-latest-group:first-child {
+  padding-left: 0;
+  border-left: none;
+}
+.beamer-latest-group {
+  display: flex;
+  gap: 1.4vw;
+  padding-left: 2.5vw;
+  border-left: 2px solid var(--b-bg);
+}
+.beamer-note {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 1.3em;
+}
+.beamer-note.dropped > span:last-child {
+  color: var(--b-muted);
+  text-decoration: line-through;
+}
+.beamer-note.sum > span:last-child {
+  font-weight: 700;
+}
+.beamer-latest-total {
+  margin-left: auto;
+  font-size: 2.6em;
+  font-weight: 800;
   color: var(--b-accent);
+  line-height: 1;
 }
 .beamer-muted {
   color: var(--b-muted);

@@ -179,6 +179,14 @@ describe("Export", () => {
 });
 
 describe("Beamer", () => {
+  it("streicht höchste und niedrigste Haltungsnote", async () => {
+    const { droppedExecutionNotes } = await import("../src/core");
+    expect(droppedExecutionNotes([7, 6.5, 7.2, 6.9])).toEqual([1, 2]);
+    expect(droppedExecutionNotes([7, 7, 7, 7])).toEqual([0, 3]);
+    expect(droppedExecutionNotes([6.8, 7.1, 6.9])).toEqual([0, 1]);
+    expect(droppedExecutionNotes([7, 7.5])).toEqual([]);
+  });
+
   it("zeigt aktuelle Übung, letzte Wertung, Nächste und Zwischenstand", async () => {
     const { appendMissingTeams, beamerView } = await import("../src/core");
     const { c, teams } = setup({ A: 14, B: 13 });
@@ -188,7 +196,10 @@ describe("Beamer", () => {
     const view = beamerView(withAbsent, "OK", "kuer", 2, "routine");
     expect(view.subtitle).toBe("Offene Klasse · Kür");
     expect(view.current).toMatchObject({ startNumber: 3, team: "A 1", state: "scored", score: { total: 23 } });
-    expect(view.previous).toMatchObject({ startNumber: 1, score: { total: 23 } });
+    expect(view.latest).toMatchObject({ startNumber: 3, score: { total: 23 } });
+    expect(view.latest?.notes?.execution).toHaveLength(4);
+    const before = beamerView(withAbsent, "OK", "kuer", 1, "routine");
+    expect(before.latest).toMatchObject({ startNumber: 1 });
     expect(view.next.map((n) => n.team)).toEqual(["B 1", "A 1"]);
     expect(view.standings.columns).toEqual(["Pflicht", "Kür", "Vorkampf"]);
     expect(view.standings.rows.map((r) => [r.rank, r.team, r.points, r.highlight])).toEqual([

@@ -33,6 +33,29 @@ export interface BeamerRoutine {
     deduction: number;
     total: number;
   };
+  /** Einzelnoten, nur bei gewerteten Übungen. */
+  notes?: {
+    execution: number[];
+    /** Positionen in `execution`, die als höchste/niedrigste Note gestrichen werden. */
+    dropped: number[];
+    hd: number[];
+  };
+}
+
+/**
+ * Welche Haltungsnoten gestrichen werden: ab 3 Noten die niedrigste und die höchste
+ * (bei 3 Richter:innen liegt die ergänzte Mittelwert-Note immer dazwischen).
+ */
+export function droppedExecutionNotes(notes: number[]): number[] {
+  if (notes.length < 3) return [];
+  let low = 0;
+  let high = 0;
+  notes.forEach((n, i) => {
+    if (n < notes[low]) low = i;
+    if (n >= notes[high]) high = i;
+  });
+  if (low === high) high = notes.findIndex((_, i) => i !== low);
+  return [low, high].sort((a, b) => a - b);
 }
 
 export interface BeamerStandingRow {
@@ -49,8 +72,8 @@ export interface BeamerView {
   title: string;
   subtitle: string;
   current?: BeamerRoutine;
-  /** Die zuletzt gewertete Übung vor der aktuellen. */
-  previous?: BeamerRoutine;
+  /** Die zuletzt gewertete Übung bis einschließlich der aktuellen, mit Einzelnoten. */
+  latest?: BeamerRoutine;
   next: { name: string; team: string }[];
   standings: { columns: string[]; rows: BeamerStandingRow[] };
   progress: { scored: number; total: number };
@@ -60,6 +83,7 @@ function routineOf(competition: Competition, round: RoundKind, row: ReturnType<t
   const entry = getRoutine(competition, round, row.athlete.id);
   const state = routineState(entry, competition.panel);
   const breakdown = routineBreakdown(competition, row.athlete, round, entry);
+  const execution = breakdown && entry ? entry.execution.slice(0, competition.panel.executionJudges).map(Number) : [];
   return {
     startNumber: row.startNumber,
     name: [row.athlete.firstName, row.athlete.lastName].filter(Boolean).join(" "),
@@ -72,6 +96,11 @@ function routineOf(competition: Competition, round: RoundKind, row: ReturnType<t
       timeOfFlight: breakdown.timeOfFlight,
       deduction: breakdown.pflichtDeduction + breakdown.otherDeduction,
       total: breakdown.total,
+    },
+    notes: breakdown && entry && {
+      execution,
+      dropped: droppedExecutionNotes(execution),
+      hd: entry.hd.slice(0, competition.panel.hdJudges).map(Number),
     },
   };
 }
@@ -88,8 +117,8 @@ export function beamerView(
   const rows = classStartList(competition, classId, round);
   const routines = rows.map((row) => routineOf(competition, round, row));
   const current = routines[index];
-  const previous = routines
-    .slice(0, Math.max(index, 0))
+  const latest = routines
+    .slice(0, Math.max(index + 1, 0))
     .reverse()
     .find((r) => r.state === "scored");
 
@@ -107,7 +136,7 @@ export function beamerView(
     title: competition.name,
     subtitle: `${config.name} · ${ROUND_LABELS[round]}`,
     current,
-    previous,
+    latest,
     next: rows.slice(index + 1, index + 3).map((row) => ({
       name: [row.athlete.firstName, row.athlete.lastName].filter(Boolean).join(" "),
       team: teamLabel(row.team),

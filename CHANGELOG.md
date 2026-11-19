@@ -4,6 +4,9 @@ Alle wichtigen Änderungen an diesem Projekt. Format nach [Keep a Changelog](htt
 
 ## [Unveröffentlicht]
 
+### Geändert
+- Beamer: Unten über die ganze Breite steht jetzt die letzte Wertung mit allen Einzelnoten (E1 bis E4 mit gestrichener höchster und niedrigster Note, HD1 und HD2, Schwierigkeit, ggf. ToF und Abzug). Sie bleibt stehen, bis die nächste Übung vollständig gewertet ist.
+
 ## [1.1.2] – 2026-11-19
 
 ### Behoben
