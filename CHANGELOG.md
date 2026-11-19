@@ -4,6 +4,8 @@ Alle wichtigen Änderungen an diesem Projekt. Format nach [Keep a Changelog](htt
 
 ## [Unveröffentlicht]
 
+## [1.1.1] – 2026-11-19
+
 ### Hinzugefügt
 - Beamer-Ansicht: Im Wettkampf öffnet „Beamer öffnen“ ein zweites Fenster für Beamer oder Hallen-Bildschirm. Es zeigt die aktuelle Übung mit Wertung, die letzte Wertung, wer als Nächstes springt, und den Zwischenstand der Klasse. Umschaltbar auf „Nur Zwischenstand“ oder „Pause“; F11 oder Doppelklick schaltet auf Vollbild.
 
