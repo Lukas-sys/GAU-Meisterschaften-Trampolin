@@ -4,6 +4,8 @@ Alle wichtigen Änderungen an diesem Projekt. Format nach [Keep a Changelog](htt
 
 ## [Unveröffentlicht]
 
+## [1.3.0] – 2026-11-19
+
 ### Hinzugefügt
 - Meldungen lassen sich wieder drucken: alle Mannschaften, die der gewählten Klasse oder eine einzelne, wahlweise eine oder zwei Mannschaften pro Seite oder alle hintereinander. Jahrgang, Pflichtstufe und Abzug, Startplätze und eine Unterschriftszeile sind einzeln abwählbar.
 - Vor jedem Druck (Meldungen, Startlisten, Ergebnisliste) öffnet sich ein Dialog, in dem du einstellst, was auf das Blatt kommt. Die letzte Auswahl wird gemerkt.
