@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
  
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -68,7 +68,7 @@ jobs:
       - run: npm test
       - run: cargo test --manifest-path src-tauri/Cargo.toml
  
-      - uses: tauri-apps/tauri-action@v0
+      - uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
@@ -78,7 +78,7 @@ jobs:
           releaseName: GVM Trampolin ${{ github.ref_name }}
           releaseBody: ${{ steps.notes.outputs.body }}
           releaseDraft: true
-          includeUpdaterJson: true
+          uploadUpdaterJson: true
           # Update-Paket und Signatur nur im Release-Build; lokal geht `npm run tauri build` ohne Schlüssel.
           args: --config src-tauri/tauri.release.conf.json
  

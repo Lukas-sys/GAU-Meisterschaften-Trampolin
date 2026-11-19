@@ -1,16 +1,16 @@
 name: CI
-
+ 
 on:
   push:
     branches: [main]
   pull_request:
-
+ 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -18,7 +18,7 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-
+ 
   rust:
     runs-on: ubuntu-latest
     steps:
@@ -30,3 +30,4 @@ jobs:
         with:
           workspaces: src-tauri
       - run: cargo test --manifest-path src-tauri/Cargo.toml
+ 

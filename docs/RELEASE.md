@@ -103,6 +103,8 @@ Für `.xlsx` stehen Autor:innen in `docProps/core.xml` im ZIP. In Excel: *Datei 
 
 ## Ein Release erstellen
 
+Vorher `git pull` und `npm ci` (nicht `npm install`, siehe README).
+
 1. Während der Entwicklung jede nennenswerte Änderung unter `## [Unveröffentlicht]` in `CHANGELOG.md` eintragen (Hinzugefügt, Geändert, Behoben). Der Text erscheint später im Programm unter „Was ist neu?“, also für Anwender:innen schreiben.
 2. Version festlegen (Semantic Versioning): Fehlerbehebung → `1.0.1`, neue Funktion → `1.1.0`, inkompatible Änderung am Dateiformat → `2.0.0`.
 3. Vorbereiten:

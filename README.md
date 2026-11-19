@@ -13,12 +13,14 @@ Wie man damit einen Wettkampf auswertet, steht in der [Anleitung](docs/ANLEITUNG
 Voraussetzungen: [Node.js 22](https://nodejs.org/), [Rust](https://rustup.rs/) und die [Tauri-Voraussetzungen für Windows](https://tauri.app/start/prerequisites/) (WebView2 ist bei Windows 10/11 meist schon installiert).
 
 ```bash
-npm install
+npm ci              # Abhängigkeiten genau nach package-lock.json installieren
 npm test            # Rechenkern testen
 cargo test --manifest-path src-tauri/Cargo.toml  # Datei- und Excel-Zugriff testen
 npm run tauri dev   # Programm im Entwicklungsmodus starten
 npm run tauri build # Installer bauen (src-tauri/target/release/bundle/nsis)
 ```
+
+Bitte `npm ci` statt `npm install` verwenden: `npm install` unter Windows entfernt Einträge für andere Systeme aus `package-lock.json`, danach scheitert die CI. Neue Pakete mit `npm install <paket>` hinzufügen und vor dem Commit prüfen, ob die Lockdatei Einträge verloren hat.
 
 ## Aufbau
 
