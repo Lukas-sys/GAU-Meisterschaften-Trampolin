@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { version } from "../package.json";
 import { competitionYear, validateCompetition } from "./core";
 import { fileName } from "./platform";
@@ -37,6 +37,8 @@ export default function App() {
   const [whatsNew, setWhatsNew] = useState(false);
   const { competition, path } = file;
   const beamer = useBeamer(competition);
+  const headerRef = useRef<HTMLElement>(null);
+  const compact = useScrolledPast(headerRef, Boolean(competition));
 
   // Update-Hinweise liegen außerhalb der Seiten, damit sie beim Öffnen/Schließen erhalten bleiben.
   const notices = (
@@ -62,7 +64,7 @@ export default function App() {
 
   return (
     <div className="shell">
-      <header className="shell-header">
+      <header className="shell-header" ref={headerRef}>
         <div>
           <h1>{competition.name || "Unbenannter Wettkampf"}</h1>
           <p className="muted">
@@ -80,7 +82,12 @@ export default function App() {
           </button>
         </div>
       </header>
-      <nav className="tabs" aria-label="Bereiche">
+      <nav className={compact ? "tabs compact" : "tabs"} aria-label="Bereiche">
+        {compact && (
+          <span className="tabs-title" title={competition.name}>
+            {competition.name || "Unbenannter Wettkampf"}
+          </span>
+        )}
         {PAGES.map((p) => (
           <button
             key={p.id}
@@ -91,6 +98,11 @@ export default function App() {
             {p.id === "teams" && errorCount > 0 && <span className="badge">{errorCount}</span>}
           </button>
         ))}
+        {compact && (
+          <span className={`save-state save-${file.saveState} tabs-save`} title={file.saveError ?? undefined}>
+            {SAVE_LABELS[file.saveState]}
+          </span>
+        )}
       </nav>
       <main className="page">
         {page === "overview" && <OverviewPage competition={competition} update={file.update} />}
@@ -115,4 +127,20 @@ export default function App() {
       {notices}
     </div>
   );
+}
+
+/** true, sobald `ref` (die Kopfzeile) aus dem Bild gescrollt ist. */
+function useScrolledPast(ref: React.RefObject<HTMLElement | null>, active: boolean): boolean {
+  const [past, setPast] = useState(false);
+  useEffect(() => {
+    const element = ref.current;
+    if (!active || !element) {
+      setPast(false);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => setPast(!entry.isIntersecting));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [ref, active]);
+  return past;
 }

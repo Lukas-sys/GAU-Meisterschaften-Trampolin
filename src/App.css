@@ -1,4 +1,5 @@
 :root {
+  --tabs-height: 2.9rem;
   --bg: #f4f6f8;
   --surface: #ffffff;
   --text: #1f2933;
@@ -243,11 +244,33 @@ label.checkbox {
   font-weight: 600;
 }
 .tabs {
+  /* Bleibt beim Scrollen oben stehen; ohne Kopfzeile darüber mit Wettkampfname (compact). */
+  position: sticky;
+  top: 0;
+  z-index: 30;
   display: flex;
   gap: 0.25rem;
   padding: 0 1.5rem;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
+}
+.tabs.compact {
+  box-shadow: 0 2px 8px rgba(16, 42, 67, 0.08);
+}
+.tabs-title,
+.tabs-save {
+  align-self: center;
+}
+.tabs-title {
+  max-width: 22rem;
+  margin-right: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.tabs-save {
+  margin-left: auto;
 }
 .tab {
   background: none;
@@ -776,14 +799,15 @@ td.has-deduction {
   .run-layout {
     grid-template-columns: 220px 1fr;
   }
+  /* Zwischenstand unter der Folie, damit die mitlaufende Startreihenfolge links nichts überdeckt. */
   .run-layout .live-table {
-    grid-column: 1 / -1;
+    grid-column: 2;
   }
 }
 .run-nav {
   padding: 0.75rem 0.5rem;
   position: sticky;
-  top: 1rem;
+  top: calc(var(--tabs-height) + 1rem);
 }
 .run-nav h2 {
   padding: 0 0.5rem;
