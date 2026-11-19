@@ -4,7 +4,7 @@ import { competitionYear, validateCompetition } from "./core";
 import { fileName } from "./platform";
 import { useBeamer } from "./state/useBeamer";
 import { useCompetitionFile, type SaveState } from "./state/useCompetitionFile";
-import { CompetitionPage } from "./ui/CompetitionPage";
+import { CompetitionPage, initialRunState, type RunState } from "./ui/CompetitionPage";
 import { OverviewPage } from "./ui/OverviewPage";
 import { ResultsPage } from "./ui/ResultsPage";
 import { StartListsPage } from "./ui/StartListsPage";
@@ -39,6 +39,10 @@ export default function App() {
   const beamer = useBeamer(competition);
   const headerRef = useRef<HTMLElement>(null);
   const compact = useScrolledPast(headerRef, Boolean(competition));
+  // Stelle im Wettkampfmodus; gilt bis der Wettkampf geschlossen wird.
+  const [runState, setRunState] = useState<RunState>(initialRunState);
+  const competitionId = competition?.id;
+  useEffect(() => setRunState(initialRunState), [competitionId]);
 
   // Update-Hinweise liegen außerhalb der Seiten, damit sie beim Öffnen/Schließen erhalten bleiben.
   const notices = (
@@ -115,6 +119,8 @@ export default function App() {
             update={file.update}
             onGoToStartLists={() => setPage("startlists")}
             beamer={beamer}
+            runState={runState}
+            setRunState={setRunState}
           />
         )}
       </main>

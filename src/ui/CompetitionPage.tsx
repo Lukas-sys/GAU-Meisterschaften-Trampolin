@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, type Dispatch, type SetStateAction } from "react";
 import {
   classStartList,
   classTeamOrder,
@@ -28,16 +28,31 @@ interface Props {
   update: (change: (c: Competition) => Competition) => void;
   onGoToStartLists: () => void;
   beamer: BeamerControl;
+  runState: RunState;
+  setRunState: Dispatch<SetStateAction<RunState>>;
 }
+
+/** Wo im Wettkampfmodus man gerade ist: Klasse, Durchgang und Übung je Durchgang. */
+export interface RunState {
+  classId: ClassId;
+  round: RoundKind;
+  /** Position in der Startliste je „Klasse:Durchgang“. */
+  positions: Record<string, number>;
+}
+
+export const initialRunState: RunState = { classId: "OK", round: "pflicht", positions: {} };
 
 const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLInputElement || target instanceof HTMLSelectElement || target instanceof HTMLTextAreaElement;
 
 /** Wettkampfmodus: eine Folie je Übung, Startreihenfolge zum Springen und Live-Tabelle. */
-export function CompetitionPage({ competition, update, onGoToStartLists, beamer }: Props) {
-  const [classId, setClassId] = useState<ClassId>("OK");
-  const [selectedRound, setRound] = useState<RoundKind>("pflicht");
-  const [positions, setPositions] = useState<Record<string, number>>({});
+export function CompetitionPage({ competition, update, onGoToStartLists, beamer, runState, setRunState }: Props) {
+  // Liegt in App, damit Klasse, Durchgang und Übung beim Seitenwechsel erhalten bleiben.
+  const { classId, round: selectedRound, positions } = runState;
+  const setClassId = (next: ClassId) => setRunState((s) => ({ ...s, classId: next }));
+  const setRound = (next: RoundKind) => setRunState((s) => ({ ...s, round: next }));
+  const setPositions = (change: (p: Record<string, number>) => Record<string, number>) =>
+    setRunState((s) => ({ ...s, positions: change(s.positions) }));
 
   const rounds = availableRounds(competition, classId);
   const round = rounds.includes(selectedRound) ? selectedRound : rounds[0];
