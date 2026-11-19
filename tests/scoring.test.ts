@@ -14,8 +14,12 @@ describe("Wertung einer Übung", () => {
     expect(executionScore([6.8, 6.5, 7.0, 7.3])).toBe(13.8);
   });
 
-  it("verdoppelt bei 3 Haltungsnoten den Mittelwert", () => {
+  it("ergänzt bei 3 Haltungsnoten den Mittelwert als vierte Note", () => {
+    // 6,0 / 6,2 / 7,0 → vierte Note 6,4 → gestrichen 6,0 und 7,0 → 6,2 + 6,4
+    expect(executionScore([6.0, 6.2, 7.0])).toBe(12.6);
     expect(executionScore([6.0, 6.3, 6.6])).toBe(12.6);
+    // Mittelwert 6,1333… bleibt ungerundet, gerundet wird erst das Ergebnis
+    expect(executionScore([6.0, 6.1, 6.3])).toBe(12.233);
   });
 
   it("streicht bei 5 Haltungsnoten und verdoppelt den Mittelwert der übrigen drei", () => {

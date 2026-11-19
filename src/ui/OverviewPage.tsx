@@ -92,11 +92,16 @@ export function OverviewPage({ competition, update }: Props) {
             Flugzeit (ToF) werten
           </label>
         </div>
-        {competition.panel.executionJudges !== 4 && (
+        {competition.panel.executionJudges === 3 && (
+          <p className="muted small">
+            Bei 3 Haltungsnoten wird der Mittelwert der drei als vierte Note ergänzt. Dann zählen wie gewohnt die
+            mittleren zwei Noten.
+          </p>
+        )}
+        {competition.panel.executionJudges === 5 && (
           <p className="alert alert-warning small">
-            Bei {competition.panel.executionJudges} Haltungsnoten wird der Mittelwert verdoppelt
-            {competition.panel.executionJudges > 4 ? " (höchste und niedrigste gestrichen)" : ""}. Diese
-            Regel ist noch mit dem Kampfgericht abzustimmen.
+            Bei 5 Haltungsnoten werden höchste und niedrigste gestrichen und der Mittelwert der übrigen drei
+            verdoppelt. Diese Regel ist noch mit dem Kampfgericht abzustimmen.
           </p>
         )}
         <JudgesList competition={competition} update={update} />

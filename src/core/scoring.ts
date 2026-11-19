@@ -17,11 +17,14 @@ export interface ScoreBreakdown {
  * Haltungsnote. Ab 4 Kampfrichter:innen fallen höchste und niedrigste Note weg.
  * Ergebnis = Mittelwert der verbleibenden Noten × 2; bei 4 Richter:innen ist das
  * genau die Summe der mittleren zwei Noten wie in der bisherigen Excel.
- * Die Regel für 3 oder 5 Richter:innen ist noch mit dem Kampfgericht abzustimmen.
+ * Bei 3 Richter:innen wird eine vierte Note als Mittelwert der drei ergänzt
+ * (Vorgabe des Kampfgerichts), dann gilt die Regel für 4.
+ * Die Regel für 5 Richter:innen ist noch mit dem Kampfgericht abzustimmen.
  */
 export function executionScore(notes: number[]): number {
   if (notes.length === 0) return 0;
-  const sorted = [...notes].sort((a, b) => a - b);
+  const completed = notes.length === 3 ? [...notes, notes.reduce((sum, n) => sum + n, 0) / 3] : notes;
+  const sorted = [...completed].sort((a, b) => a - b);
   const counted = sorted.length >= 4 ? sorted.slice(1, -1) : sorted;
   const mean = counted.reduce((sum, n) => sum + n, 0) / counted.length;
   return roundScore(mean * 2);
