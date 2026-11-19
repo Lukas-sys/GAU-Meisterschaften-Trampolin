@@ -4,6 +4,8 @@ Alle wichtigen Änderungen an diesem Projekt. Format nach [Keep a Changelog](htt
 
 ## [Unveröffentlicht]
 
+## [1.0.1] – 2026-11-19
+
 ### Geändert
 - Interne Aktualisierungen der Build-Werkzeuge (TypeScript 7, GitHub Actions). Am Programm selbst ändert sich nichts. Diese Version prüft vor allem, ob die automatische Aktualisierung funktioniert.
 
