@@ -1,6 +1,6 @@
 # Plan: Programm für die Gau-Vereinsmeisterschaften Trampolin
 
-Stand: 19.11.2026 · Status: M0 bis M6 umgesetzt (v1.0-Funktionsumfang, Updater, Release-Ablauf). Offen für M6: Signaturschlüssel erzeugen, Repo öffentlich machen, erstes Release (siehe docs/RELEASE.md)
+Stand: 19.11.2026 · Status: M0 bis M6 umgesetzt. v1.0.0 und v1.0.1 veröffentlicht, Updater im echten Betrieb getestet. Repo öffentlich und abgesichert (docs/RELEASE.md).
 
 Grundlage: `Meldebogen_GVM2026.xls`, `Auswertung GVM.xlsx` (anonymisiert) und die Ausschreibung `AusGVM2026.pdf`.
 
@@ -208,7 +208,7 @@ Ergebnisse, Ränge und Startlisten werden **immer berechnet**, nie kopiert.
 | M4 | Wettkampfmodus | Slideshow-Eingabe, Navigation, Live-Tabelle | Vorkampf komplett im Programm durchführbar |
 | M5 | Finale & Ergebnisse | Finalqualifikation mit Gleichstand-Entscheidung, Finale-Durchgang, Ergebnislisten, Export | Gesamter Wettkampf abbildbar, **v1.0** |
 | M6 | Updater & Veröffentlichung | In-App-Update mit Changelog über GitHub Releases, README/Anleitung, Repo öffentlich, Code-Signing (Vorschlag: SignPath Foundation, Alternative Certum Open Source) | Programm hält sich selbst aktuell |
-| M7 | Bonus | Beamer-Ansicht, ggf. mehrere Eingabeplätze | nach Bedarf |
+| M7 | Bonus | Beamer-Ansicht (**umgesetzt**), ggf. mehrere Eingabeplätze (zurückgestellt, bis der Bedarf klar ist) | nach Bedarf |
 
 Zeitplanung: Der Wettkampf am **21.11.2026** ist in drei Tagen, dafür ist das Programm nicht realistisch. Ziel ist die **GVM 2027**. Die diesjährige Veranstaltung kann man nutzen, um den echten Ablauf zu beobachten und (mit Einverständnis) eine ausgefüllte Excel als Testdatensatz zu bekommen.
 
@@ -227,7 +227,8 @@ Zeitplanung: Der Wettkampf am **21.11.2026** ist in drei Tagen, dafür ist das P
 | 7 | ToF | Optional |
 | 8 | Updater | Umgesetzt in M6: Hinweis beim Start, Installation nur auf Knopfdruck |
 | 9 | Betriebssystem | Windows |
-| 10 | Beamer-Ansicht | Bonus, erst mal nicht nötig |
+| 10 | Beamer-Ansicht | Umgesetzt in M7: zweites Fenster, folgt der Eingabe; Modi Übung, Zwischenstand, Pause |
+| 13 | Mehrere Eingabeplätze | Erst später klären, wenn der Bedarf am Wettkampftag klar ist (19.11.2026) |
 | 11 | Eingabeplätze | Erst einer, später vielleicht mehrere |
 | 12 | Datenschutz | Keine echten Namen im Repo |
 
@@ -244,4 +245,4 @@ Zeitplanung: Der Wettkampf am **21.11.2026** ist in drei Tagen, dafür ist das P
 | # | Thema | Stand jetzt | Später besser lösen |
 |---|---|---|---|
 | TD1 | Drucken (seit M3) | `window.print()` öffnet die Druckvorschau von WebView2. Sie füllt das ganze Programmfenster. Damit ein Klick auf das X des Fensters nicht das Programm beendet, wird das Schließen während der Vorschau und 1,5 s danach ignoriert (`src/printGuard.ts`). Verworfen: der Windows-Systemdialog über `ICoreWebView2_16::ShowPrintUI` (funktionierte nicht sauber) und ein eigenes, kleineres Druckfenster (der Hintergrund in Druckansicht schaut neben der Vorschau heraus). | z. B. PDF selbst erzeugen (WebView2 `PrintToPdf` oder eine PDF-Bibliothek) und im Standard-PDF-Programm öffnen bzw. direkt drucken; dann auch „Als PDF speichern“ ohne Druckdialog. Betrifft seit M5 auch Ergebnis- und Siegerliste. |
-| TD2 | Excel-Export (seit M5) | Export als CSV (Semikolon, Dezimalkomma, UTF-8), öffnet sich in Excel. | Echte .xlsx-Datei mit Formatierung, z. B. über `rust_xlsxwriter` im Rust-Teil. |
+| ~~TD2~~ | Excel-Export (seit M5, **erledigt**: echte .xlsx über `rust_xlsxwriter`) | Export als CSV (Semikolon, Dezimalkomma, UTF-8), öffnet sich in Excel. | Echte .xlsx-Datei mit Formatierung, z. B. über `rust_xlsxwriter` im Rust-Teil. |

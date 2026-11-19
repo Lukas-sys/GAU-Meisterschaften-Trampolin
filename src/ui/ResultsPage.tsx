@@ -10,6 +10,7 @@ import {
   moveInTie,
   resetFinalists,
   resultsCsv,
+  resultsWorkbook,
   routineState,
   teamLabel,
   VORKAMPF_ROUNDS,
@@ -20,7 +21,7 @@ import {
   type TeamStanding,
   type TieStage,
 } from "../core";
-import { exportTextFile } from "../platform";
+import { canWriteXlsx, exportTextFile, exportXlsxFile } from "../platform";
 import { PrintHeader, usePrint } from "./usePrint";
 
 interface Props {
@@ -59,11 +60,14 @@ export function ResultsPage({ competition, update }: Props) {
   const hasFinalRound = config.rounds.includes("finale");
   const confirmed = competition.finals?.[classId];
 
-  async function exportCsv() {
+  async function exportResults() {
     setExportNote(null);
     try {
       const name = `Ergebnisse ${competition.name}`.trim();
-      const path = await exportTextFile(name, "csv", "CSV für Excel", resultsCsv(competition));
+      // Im Browser (nur Entwicklung) gibt es keinen Rust-Teil, dann als CSV.
+      const path = canWriteXlsx()
+        ? await exportXlsxFile(name, resultsWorkbook(competition))
+        : await exportTextFile(name, "csv", "CSV für Excel", resultsCsv(competition));
       if (path) setExportNote(`Gespeichert: ${path}`);
     } catch (error) {
       setExportNote(`Export fehlgeschlagen: ${String(error)}`);
@@ -122,8 +126,8 @@ export function ResultsPage({ competition, update }: Props) {
         <button className="button-secondary" onClick={printWinners} disabled={competition.teams.length === 0}>
           Siegerliste drucken
         </button>
-        <button className="button-secondary" onClick={() => void exportCsv()} disabled={competition.teams.length === 0}>
-          Als CSV exportieren
+        <button className="button-secondary" onClick={() => void exportResults()} disabled={competition.teams.length === 0}>
+          Als Excel exportieren
         </button>
       </div>
       {exportNote && <p className="alert alert-success small">{exportNote}</p>}

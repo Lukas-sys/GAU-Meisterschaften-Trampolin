@@ -1169,3 +1169,12 @@ td.has-deduction {
   margin: 0.8rem 0 0.2rem;
   font-size: 1.1rem;
 }
+
+.beamer-controls {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+.beamer-controls select {
+  width: auto;
+}

@@ -30,7 +30,7 @@ Bitte `npm ci` statt `npm install` verwenden: `npm install` unter Windows entfer
 | `src/ui/`, `src/App.tsx` | Oberfläche (React) |
 | `src/platform.ts` | Dateien und Dialoge (Tauri); im Browser nur eingeschränkt |
 | `src/updater.ts` | Updates über GitHub Releases (tauri-plugin-updater) |
-| `src-tauri/` | Desktop-Hülle (Tauri/Rust): Speichern mit Sicherungskopie, Excel lesen (calamine) |
+| `src-tauri/` | Desktop-Hülle (Tauri/Rust): Speichern mit Sicherungskopie, Excel lesen (calamine) und schreiben (rust_xlsxwriter) |
 | `scripts/` | Release vorbereiten, Release-Text aus dem Changelog |
 | `tests/` | Tests; `tests/fixtures/` enthält anonymisierte Beispieldaten aus der bisherigen Excel |
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { version } from "../package.json";
 import { competitionYear, validateCompetition } from "./core";
 import { fileName } from "./platform";
+import { useBeamer } from "./state/useBeamer";
 import { useCompetitionFile, type SaveState } from "./state/useCompetitionFile";
 import { CompetitionPage } from "./ui/CompetitionPage";
 import { OverviewPage } from "./ui/OverviewPage";
@@ -35,6 +36,7 @@ export default function App() {
   const [page, setPage] = useState<Page>("overview");
   const [whatsNew, setWhatsNew] = useState(false);
   const { competition, path } = file;
+  const beamer = useBeamer(competition);
 
   // Update-Hinweise liegen außerhalb der Seiten, damit sie beim Öffnen/Schließen erhalten bleiben.
   const notices = (
@@ -100,6 +102,7 @@ export default function App() {
             competition={competition}
             update={file.update}
             onGoToStartLists={() => setPage("startlists")}
+            beamer={beamer}
           />
         )}
       </main>

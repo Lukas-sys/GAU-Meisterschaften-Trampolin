@@ -62,6 +62,18 @@ Klasse und Durchgang wählen. Für jede Übung gibt es eine Folie mit Startnumme
 
 Tastatur: **Tab** nächstes Feld, **Enter** nächste Übung, **Umschalt+Enter** vorherige, **Bild auf/ab** blättern.
 
+### Beamer
+
+**Beamer öffnen** (oben rechts im Wettkampf) öffnet ein zweites Fenster für Beamer oder Hallen-Bildschirm:
+
+1. Beamer oder Bildschirm anschließen und in Windows auf „Erweitern“ stellen (Windows-Taste + P).
+2. **Beamer öffnen** klicken und das neue Fenster auf den Beamer ziehen.
+3. Im Beamer-Fenster **F11** drücken oder doppelklicken, dann füllt es den ganzen Beamer. Noch einmal F11 oder Doppelklick verlässt das Vollbild.
+
+Der Beamer folgt immer der Übung, die im Wettkampf gerade offen ist: Startnummer, Name, Mannschaft, Punkte mit Haltung, HD und Schwierigkeit, sobald die Wertung vollständig ist, dazu die letzte Wertung, wer als Nächstes springt, und der Zwischenstand (die Mannschaft der aktuellen Übung ist hervorgehoben).
+
+Über die Auswahl neben dem Knopf zeigt der Beamer stattdessen **Nur Zwischenstand** (groß, z. B. vor dem Finale) oder **Pause** (nur der Wettkampfname). Wechselst du im Programm auf eine andere Seite, bleibt der Beamer beim letzten Stand. Schließt du das Hauptfenster, schließt sich auch der Beamer.
+
 ## 6. Ergebnisse und Finale
 
 1. Nach Pflicht und Kür schlägt das Programm die Finalmannschaften vor (2/3 der Mannschaften, abgerundet, höchstens 5). Die Linie zeigt die Finalgrenze.
@@ -73,7 +85,7 @@ Endergebnis: Die Finalmannschaften nach Pflicht + Kür + Finale, danach die übr
 
 - **Ergebnisliste drucken**: alle Mannschaften mit allen Einzelwertungen, die gewerteten fett.
 - **Siegerliste drucken**: Platzierungen für die Siegerehrung.
-- **Als CSV exportieren**: alle Ergebnisse als Tabelle für Excel.
+- **Als Excel exportieren**: eine Excel-Datei mit dem Ergebnis je Klasse, allen Einzelwertungen, allen Übungen mit Noten und den Wettkampfangaben.
 
 ## Tipps für den Wettkampftag
 

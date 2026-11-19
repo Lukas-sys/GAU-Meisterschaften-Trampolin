@@ -13,3 +13,5 @@ export * from "./results";
 export * from "./final";
 export * from "./export";
 export * from "./changelog";
+export * from "./workbook";
+export * from "./beamer";

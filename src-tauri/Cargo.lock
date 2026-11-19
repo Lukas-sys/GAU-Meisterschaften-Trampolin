@@ -1356,6 +1356,7 @@ name = "gvm-trampolin"
 version = "1.0.1"
 dependencies = [
  "calamine",
+ "rust_xlsxwriter",
  "serde",
  "serde_json",
  "tauri",
@@ -2906,6 +2907,15 @@ dependencies = [
  "libc",
  "untrusted",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "rust_xlsxwriter"
+version = "0.103.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2f4be8452f0aa8f1f8129282e5e1bbf848e9931a9988572bc92e95ef4ab7e163"
+dependencies = [
+ "zip",
 ]
 
 [[package]]

@@ -5,6 +5,7 @@ import {
   formatPoints,
   getRoutine,
   progressOf,
+  BEAMER_MODE_LABELS,
   ROUND_LABELS,
   ROUTINE_STATE_LABELS,
   routineBreakdown,
@@ -13,8 +14,11 @@ import {
   type ClassId,
   type Competition,
   type RoundKind,
+  type BeamerMode,
   type StartListRow,
 } from "../core";
+import { openBeamerWindow } from "../beamerChannel";
+import type { BeamerControl } from "../state/useBeamer";
 import { LiveTable } from "./LiveTable";
 import { RoutineSlide } from "./RoutineSlide";
 import { availableRounds } from "./StartListsPage";
@@ -23,13 +27,14 @@ interface Props {
   competition: Competition;
   update: (change: (c: Competition) => Competition) => void;
   onGoToStartLists: () => void;
+  beamer: BeamerControl;
 }
 
 const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLInputElement || target instanceof HTMLSelectElement || target instanceof HTMLTextAreaElement;
 
 /** Wettkampfmodus: eine Folie je Übung, Startreihenfolge zum Springen und Live-Tabelle. */
-export function CompetitionPage({ competition, update, onGoToStartLists }: Props) {
+export function CompetitionPage({ competition, update, onGoToStartLists, beamer }: Props) {
   const [classId, setClassId] = useState<ClassId>("OK");
   const [selectedRound, setRound] = useState<RoundKind>("pflicht");
   const [positions, setPositions] = useState<Record<string, number>>({});
@@ -54,6 +59,12 @@ export function CompetitionPage({ competition, update, onGoToStartLists }: Props
   useEffect(() => {
     if (positions[viewKey] === undefined && rows.length > 0) setPositions((p) => ({ ...p, [viewKey]: firstOpen }));
   }, [viewKey, positions, rows.length, firstOpen]);
+
+  // Der Beamer zeigt immer die Übung, die hier gerade offen ist.
+  const { select } = beamer;
+  useEffect(() => {
+    if (round && rows.length > 0) select({ classId, round, index });
+  }, [select, classId, round, index, rows.length]);
 
   const goTo = (next: number) => {
     if (rows.length === 0) return;
@@ -110,6 +121,22 @@ export function CompetitionPage({ competition, update, onGoToStartLists }: Props
           <span className="muted small">Finale erscheint, sobald die Finalisten unter „Ergebnisse“ bestätigt sind.</span>
         )}
         <div className="spacer" />
+        <div className="beamer-controls">
+          <button className="button-secondary" onClick={() => void openBeamerWindow()} title="Zweites Fenster für Beamer oder Hallen-Bildschirm">
+            Beamer öffnen
+          </button>
+          <select
+            aria-label="Beamer zeigt"
+            value={beamer.mode}
+            onChange={(e) => beamer.setMode(e.target.value as BeamerMode)}
+          >
+            {(Object.keys(BEAMER_MODE_LABELS) as BeamerMode[]).map((m) => (
+              <option key={m} value={m}>
+                Beamer: {BEAMER_MODE_LABELS[m]}
+              </option>
+            ))}
+          </select>
+        </div>
         {rows.length > 0 && (
           <span className="muted small">
             {progress.scored} von {progress.total} gewertet

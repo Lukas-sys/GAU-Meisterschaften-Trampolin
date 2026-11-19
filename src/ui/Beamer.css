@@ -1,0 +1,184 @@
+/* Beamer-Fenster: dunkler Hintergrund, große Schrift, skaliert mit der Fenstergröße. */
+.beamer {
+  --b-bg: #0f1c2e;
+  --b-surface: #182a42;
+  --b-text: #f4f7fb;
+  --b-muted: #9fb3c8;
+  --b-accent: #f0b429;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  padding: 3vh 3vw;
+  background: var(--b-bg);
+  color: var(--b-text);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: clamp(14px, 1.6vw, 40px);
+  line-height: 1.25;
+  overflow: hidden;
+  user-select: none;
+  cursor: default;
+}
+.beamer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 2px solid var(--b-surface);
+  padding-bottom: 1vh;
+}
+.beamer-title {
+  font-size: 1.1em;
+  color: var(--b-muted);
+}
+.beamer-subtitle {
+  font-size: 1.8em;
+  font-weight: 700;
+}
+.beamer-progress {
+  color: var(--b-muted);
+  font-variant-numeric: tabular-nums;
+}
+.beamer-main {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 3vw;
+}
+.beamer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5vh;
+  min-width: 0;
+}
+.beamer-right,
+.beamer-standings-only {
+  min-width: 0;
+  overflow: hidden;
+}
+.beamer-standings-only {
+  flex: 1;
+  font-size: 1.3em;
+}
+.beamer-current {
+  background: var(--b-surface);
+  border-radius: 1.2vw;
+  padding: 3vh 2.5vw;
+}
+.beamer-startnumber {
+  display: inline-block;
+  min-width: 2.4em;
+  padding: 0.1em 0.5em;
+  border-radius: 0.4em;
+  background: var(--b-accent);
+  color: var(--b-bg);
+  font-weight: 700;
+  text-align: center;
+}
+.beamer-name {
+  margin-top: 1.5vh;
+  font-size: 2.4em;
+  font-weight: 700;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.beamer-team {
+  font-size: 1.3em;
+  color: var(--b-muted);
+}
+.beamer-total {
+  margin-top: 2vh;
+  font-size: 4.2em;
+  font-weight: 800;
+  color: var(--b-accent);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.beamer-waiting {
+  color: var(--b-muted);
+}
+.beamer-parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5vh 2.5vw;
+  margin-top: 2vh;
+  font-variant-numeric: tabular-nums;
+}
+.beamer-part {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.2em;
+}
+.beamer-label {
+  display: block;
+  font-size: 0.65em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--b-muted);
+}
+.beamer-previous,
+.beamer-next {
+  font-size: 1.1em;
+}
+.beamer-previous-total {
+  margin-left: 0.6em;
+  color: var(--b-accent);
+}
+.beamer-muted {
+  color: var(--b-muted);
+}
+.beamer-table {
+  width: 100%;
+  font-size: 0.95em;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.beamer-table th {
+  font-size: 0.7em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--b-muted);
+  text-align: left;
+  padding: 0 0.4em 0.6vh;
+}
+.beamer-table td {
+  white-space: nowrap;
+  padding: 0.7vh 0.4em;
+  border-top: 1px solid var(--b-surface);
+}
+.beamer-num {
+  text-align: right !important;
+  white-space: nowrap;
+}
+.beamer-sum {
+  font-weight: 700;
+}
+.beamer-highlight td {
+  background: var(--b-surface);
+  color: var(--b-accent);
+}
+.beamer-pause {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 2vh;
+}
+.beamer-pause h1 {
+  font-size: 3em;
+  margin: 0;
+}
+.beamer-pause p {
+  color: var(--b-muted);
+}
+.beamer-hint {
+  position: absolute;
+  right: 1.5vw;
+  bottom: 1.5vh;
+  font-size: 0.7em;
+  color: var(--b-muted);
+}

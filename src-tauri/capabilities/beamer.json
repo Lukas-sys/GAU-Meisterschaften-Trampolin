@@ -1,0 +1,12 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "beamer",
+  "description": "Beamer-Fenster: nur Inhalte empfangen und Vollbild umschalten",
+  "windows": [
+    "beamer"
+  ],
+  "permissions": [
+    "core:default",
+    "core:window:allow-set-fullscreen"
+  ]
+}

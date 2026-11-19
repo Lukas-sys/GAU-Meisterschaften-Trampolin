@@ -139,4 +139,62 @@ describe("Export", () => {
     expect(lines[0].startsWith("Klasse;Rang;Mannschaft;Finale")).toBe(true);
     expect(lines[1]).toContain("Offene Klasse;1;A 1;ja;92;92;0;184;A1;;2000;M6;0;23;x;23;x;;");
   });
+
+  it("baut die Excel-Datei: Ergebnis je Klasse, Einzelwertungen, Übungen, Wettkampf", async () => {
+    const { appendMissingTeams, resultsWorkbook } = await import("../src/core");
+    const { c, teams, id } = setup({ A: 14, B: 13 });
+    let done = confirmFinalists(appendMissingTeams(c, "OK"), "OK", [id("A")]);
+    done = score(done, teams[0], "finale", 10);
+    done = setRoutine(done, "kuer", teams[1].athletes[3].id, { status: "absent", execution: [], hd: [] });
+    const book = resultsWorkbook(done);
+    expect(book.sheets.map((s) => s.name)).toEqual(["Offene Klasse", "Einzelwertungen", "Übungen", "Wettkampf"]);
+
+    const ok = book.sheets[0];
+    expect(ok.columns.map((col) => col.header)).toEqual(["Rang", "Mannschaft", "Pflicht", "Kür", "Vorkampf", "Finale", "Gesamt"]);
+    expect(ok.rows[0]).toEqual([1, "A 1", 92, 92, 184, 76, { value: 260, bold: true }]);
+    // B ohne Finale: Finale leer, Gesamt = Vorkampf (B4 in der Kür nicht angetreten → 3 Wertungen)
+    expect(ok.rows[1]).toEqual([2, "B 1", 88, 66, 154, null, { value: 154, bold: true }]);
+
+    const athletes = book.sheets[1];
+    expect(athletes.rows).toHaveLength(8);
+    expect(athletes.rows[0].slice(0, 8)).toEqual(["Offene Klasse", 1, "A 1", "A1", "", 2000, "M6", 0]);
+    expect(athletes.rows[0].slice(8)).toEqual([
+      { value: 23, bold: true },
+      { value: 23, bold: true },
+      { value: 19, bold: true },
+    ]);
+    expect(athletes.rows[7][9]).toEqual({ value: "n. a.", muted: true });
+
+    const routines = book.sheets[2];
+    // 8 Pflicht + 8 Kür + 4 Finale
+    expect(routines.rows).toHaveLength(20);
+    const header = routines.columns.map((col) => col.header);
+    expect(header).toContain("E4");
+    expect(header).toContain("HD2");
+    const first = routines.rows[0];
+    expect(first[header.indexOf("E1")]).toBe(7);
+    expect(first[header.indexOf("Punkte")]).toEqual({ value: 23, bold: true });
+  });
+
+});
+
+describe("Beamer", () => {
+  it("zeigt aktuelle Übung, letzte Wertung, Nächste und Zwischenstand", async () => {
+    const { appendMissingTeams, beamerView } = await import("../src/core");
+    const { c, teams } = setup({ A: 14, B: 13 });
+    const ordered = appendMissingTeams(c, "OK");
+    // Startliste Kür: A1, B1, A2, B2, … ; B1 (Index 1) nicht angetreten
+    const withAbsent = setRoutine(ordered, "kuer", teams[1].athletes[0].id, { status: "absent", execution: [], hd: [] });
+    const view = beamerView(withAbsent, "OK", "kuer", 2, "routine");
+    expect(view.subtitle).toBe("Offene Klasse · Kür");
+    expect(view.current).toMatchObject({ startNumber: 3, team: "A 1", state: "scored", score: { total: 23 } });
+    expect(view.previous).toMatchObject({ startNumber: 1, score: { total: 23 } });
+    expect(view.next.map((n) => n.team)).toEqual(["B 1", "A 1"]);
+    expect(view.standings.columns).toEqual(["Pflicht", "Kür", "Vorkampf"]);
+    expect(view.standings.rows.map((r) => [r.rank, r.team, r.points, r.highlight])).toEqual([
+      [1, "A 1", [92, 92, 184], true],
+      [2, "B 1", [88, 66, 154], false],
+    ]);
+    expect(view.progress).toEqual({ scored: 8, total: 8 });
+  });
 });

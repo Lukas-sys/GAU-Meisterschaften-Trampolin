@@ -4,6 +4,12 @@ Alle wichtigen Änderungen an diesem Projekt. Format nach [Keep a Changelog](htt
 
 ## [Unveröffentlicht]
 
+### Hinzugefügt
+- Beamer-Ansicht: Im Wettkampf öffnet „Beamer öffnen“ ein zweites Fenster für Beamer oder Hallen-Bildschirm. Es zeigt die aktuelle Übung mit Wertung, die letzte Wertung, wer als Nächstes springt, und den Zwischenstand der Klasse. Umschaltbar auf „Nur Zwischenstand“ oder „Pause“; F11 oder Doppelklick schaltet auf Vollbild.
+
+### Geändert
+- Ergebnisse werden als echte Excel-Datei (.xlsx) exportiert statt als CSV: ein Blatt je Klasse mit dem Ergebnis, ein Blatt mit allen Einzelwertungen (gewertete fett), ein Blatt mit allen Übungen und Noten und ein Blatt mit den Wettkampfangaben. Druckfertig quer auf Seitenbreite.
+
 ## [1.0.1] – 2026-11-19
 
 ### Geändert

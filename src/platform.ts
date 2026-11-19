@@ -4,7 +4,7 @@
  */
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import type { SheetGrid } from "./core";
+import type { SheetGrid, WorkbookSpec } from "./core";
 
 export const COMPETITION_EXTENSION = "gvm";
 const BROWSER_PREFIX = "browser:";
@@ -78,6 +78,18 @@ export async function exportTextFile(
   const path = await save({ defaultPath: fileName, filters: [{ name: filterName, extensions: [extension] }] });
   if (!path) return null;
   await invoke("write_text_file", { path, contents });
+  return path;
+}
+
+/** Kann eine echte Excel-Datei schreiben (nur im Desktop-Programm). */
+export const canWriteXlsx = (): boolean => isTauri();
+
+/** Speichert eine Excel-Datei über den Speichern-Dialog. Gibt den Pfad zurück, oder null bei Abbruch. */
+export async function exportXlsxFile(suggestedName: string, workbook: WorkbookSpec): Promise<string | null> {
+  const fileName = `${suggestedName.replace(/[\\/:*?"<>|]/g, "").trim() || "Export"}.xlsx`;
+  const path = await save({ defaultPath: fileName, filters: [{ name: "Excel-Datei", extensions: ["xlsx"] }] });
+  if (!path) return null;
+  await invoke("write_xlsx", { path, workbook });
   return path;
 }
 
