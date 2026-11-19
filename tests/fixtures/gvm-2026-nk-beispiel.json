@@ -1,0 +1,1612 @@
+{
+ "source": "Auswertung GVM.xlsx (anonymisiert), Nachwuchsklasse, Blätter Meldung/Pflicht/Kür",
+ "competitionYear": 2026,
+ "teams": [
+  {
+   "id": "Verein A",
+   "club": "Verein A",
+   "number": 1,
+   "classId": "NK",
+   "athletes": [
+    {
+     "id": "A1",
+     "lastName": "A1",
+     "firstName": "",
+     "birthYear": 2020,
+     "pflichtLevel": "P3",
+     "startPositions": {
+      "pflicht": 2
+     }
+    },
+    {
+     "id": "A2",
+     "lastName": "A2",
+     "firstName": "",
+     "birthYear": 2017,
+     "pflichtLevel": "M1",
+     "startPositions": {
+      "pflicht": 1,
+      "kuer": 1
+     }
+    },
+    {
+     "id": "A3",
+     "lastName": "A3",
+     "firstName": "",
+     "birthYear": 2017,
+     "pflichtLevel": "M0",
+     "startPositions": {
+      "kuer": 2
+     }
+    },
+    {
+     "id": "A4",
+     "lastName": "A4",
+     "firstName": "",
+     "birthYear": 2017,
+     "pflichtLevel": "M0",
+     "startPositions": {
+      "pflicht": 5,
+      "kuer": 5
+     }
+    },
+    {
+     "id": "A5",
+     "lastName": "A5",
+     "firstName": "",
+     "birthYear": 2016,
+     "pflichtLevel": "M0",
+     "startPositions": {
+      "pflicht": 3,
+      "kuer": 3
+     }
+    },
+    {
+     "id": "A7",
+     "lastName": "A7",
+     "firstName": "",
+     "birthYear": 2016,
+     "pflichtLevel": "M1",
+     "startPositions": {
+      "pflicht": 6,
+      "kuer": 6
+     }
+    },
+    {
+     "id": "A8",
+     "lastName": "A8",
+     "firstName": "",
+     "birthYear": 2016,
+     "pflichtLevel": "M1",
+     "startPositions": {
+      "pflicht": 4,
+      "kuer": 4
+     }
+    }
+   ]
+  },
+  {
+   "id": "Verein B",
+   "club": "Verein B",
+   "number": 1,
+   "classId": "NK",
+   "athletes": [
+    {
+     "id": "B1",
+     "lastName": "B1",
+     "firstName": "",
+     "birthYear": 2018,
+     "pflichtLevel": null,
+     "startPositions": {
+      "pflicht": 1,
+      "kuer": 1
+     }
+    },
+    {
+     "id": "B2",
+     "lastName": "B2",
+     "firstName": "",
+     "birthYear": 2018,
+     "pflichtLevel": null,
+     "startPositions": {
+      "pflicht": 2,
+      "kuer": 2
+     }
+    },
+    {
+     "id": "B3",
+     "lastName": "B3",
+     "firstName": "",
+     "birthYear": 2016,
+     "pflichtLevel": null,
+     "startPositions": {
+      "pflicht": 3,
+      "kuer": 3
+     }
+    },
+    {
+     "id": "B4",
+     "lastName": "B4",
+     "firstName": "",
+     "birthYear": 2016,
+     "pflichtLevel": null,
+     "startPositions": {
+      "pflicht": 4,
+      "kuer": 4
+     }
+    },
+    {
+     "id": "B5",
+     "lastName": "B5",
+     "firstName": "",
+     "birthYear": 2017,
+     "pflichtLevel": null,
+     "startPositions": {
+      "pflicht": 5,
+      "kuer": 5
+     }
+    },
+    {
+     "id": "B6",
+     "lastName": "B6",
+     "firstName": "",
+     "birthYear": 2016,
+     "pflichtLevel": null,
+     "startPositions": {
+      "pflicht": 6,
+      "kuer": 6
+     }
+    }
+   ]
+  },
+  {
+   "id": "Verein C",
+   "club": "Verein C",
+   "number": 1,
+   "classId": "NK",
+   "athletes": [
+    {
+     "id": "C1",
+     "lastName": "C1",
+     "firstName": "",
+     "birthYear": 2018,
+     "pflichtLevel": null,
+     "startPositions": {
+      "pflicht": 1,
+      "kuer": 1
+     }
+    },
+    {
+     "id": "C2",
+     "lastName": "C2",
+     "firstName": "",
+     "birthYear": 2018,
+     "pflichtLevel": null,
+     "startPositions": {
+      "pflicht": 2,
+      "kuer": 2
+     }
+    },
+    {
+     "id": "C3",
+     "lastName": "C3",
+     "firstName": "",
+     "birthYear": 2019,
+     "pflichtLevel": null,
+     "startPositions": {
+      "pflicht": 3,
+      "kuer": 3
+     }
+    },
+    {
+     "id": "C4",
+     "lastName": "C4",
+     "firstName": "",
+     "birthYear": 2017,
+     "pflichtLevel": null,
+     "startPositions": {
+      "pflicht": 4,
+      "kuer": 4
+     }
+    },
+    {
+     "id": "C5",
+     "lastName": "C5",
+     "firstName": "",
+     "birthYear": 2017,
+     "pflichtLevel": null,
+     "startPositions": {
+      "pflicht": 5,
+      "kuer": 5
+     }
+    },
+    {
+     "id": "C6",
+     "lastName": "C6",
+     "firstName": "",
+     "birthYear": 2020,
+     "pflichtLevel": "P3",
+     "startPositions": {
+      "pflicht": 6,
+      "kuer": 6
+     }
+    }
+   ]
+  },
+  {
+   "id": "Verein D",
+   "club": "Verein D",
+   "number": 1,
+   "classId": "NK",
+   "athletes": [
+    {
+     "id": "D1",
+     "lastName": "D1",
+     "firstName": "",
+     "birthYear": 2016,
+     "pflichtLevel": "P3",
+     "startPositions": {
+      "pflicht": 1,
+      "kuer": 1
+     }
+    },
+    {
+     "id": "D2",
+     "lastName": "D2",
+     "firstName": "",
+     "birthYear": 2017,
+     "pflichtLevel": "M2",
+     "startPositions": {
+      "pflicht": 2,
+      "kuer": 2
+     }
+    },
+    {
+     "id": "D3",
+     "lastName": "D3",
+     "firstName": "",
+     "birthYear": 2016,
+     "pflichtLevel": "M2",
+     "startPositions": {
+      "pflicht": 3,
+      "kuer": 3
+     }
+    },
+    {
+     "id": "D4",
+     "lastName": "D4",
+     "firstName": "",
+     "birthYear": 2017,
+     "pflichtLevel": "M2",
+     "startPositions": {
+      "pflicht": 4,
+      "kuer": 4
+     }
+    }
+   ]
+  },
+  {
+   "id": "Verein E",
+   "club": "Verein E",
+   "number": 1,
+   "classId": "NK",
+   "athletes": [
+    {
+     "id": "E1",
+     "lastName": "E1",
+     "firstName": "",
+     "birthYear": 2017,
+     "pflichtLevel": "P3",
+     "startPositions": {
+      "pflicht": 1
+     }
+    },
+    {
+     "id": "E2",
+     "lastName": "E2",
+     "firstName": "",
+     "birthYear": 2017,
+     "pflichtLevel": "P3",
+     "startPositions": {
+      "kuer": 1
+     }
+    },
+    {
+     "id": "E3",
+     "lastName": "E3",
+     "firstName": "",
+     "birthYear": 2017,
+     "pflichtLevel": "M1",
+     "startPositions": {
+      "pflicht": 2,
+      "kuer": 2
+     }
+    },
+    {
+     "id": "E4",
+     "lastName": "E4",
+     "firstName": "",
+     "birthYear": 2018,
+     "pflichtLevel": "P3",
+     "startPositions": {
+      "pflicht": 3,
+      "kuer": 3
+     }
+    },
+    {
+     "id": "E5",
+     "lastName": "E5",
+     "firstName": "",
+     "birthYear": 2019,
+     "pflichtLevel": "M1",
+     "startPositions": {
+      "pflicht": 4,
+      "kuer": 4
+     }
+    },
+    {
+     "id": "E6",
+     "lastName": "E6",
+     "firstName": "",
+     "birthYear": 2016,
+     "pflichtLevel": "M1",
+     "startPositions": {
+      "pflicht": 5,
+      "kuer": 5
+     }
+    },
+    {
+     "id": "E7",
+     "lastName": "E7",
+     "firstName": "",
+     "birthYear": 2016,
+     "pflichtLevel": "M1",
+     "startPositions": {
+      "pflicht": 6,
+      "kuer": 6
+     }
+    }
+   ]
+  }
+ ],
+ "performances": [
+  {
+   "athleteId": "A2",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     4.3,
+     4.2,
+     4.7,
+     4.8
+    ],
+    "hd": [
+     5.9,
+     5.9
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 6
+   },
+   "excelTotal": 14.9
+  },
+  {
+   "athleteId": "B1",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     5.2,
+     4.9,
+     5.8,
+     5.8
+    ],
+    "hd": [
+     9,
+     9
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 9
+   },
+   "excelTotal": 20.0
+  },
+  {
+   "athleteId": "C1",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.5,
+     6.6,
+     6.6,
+     6.7
+    ],
+    "hd": [
+     9.7,
+     9.7
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 22.9
+  },
+  {
+   "athleteId": "D1",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.9,
+     6.7,
+     6.7,
+     6.8
+    ],
+    "hd": [
+     9.9,
+     10
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.45
+  },
+  {
+   "athleteId": "E1",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.7,
+     7.7,
+     7.6,
+     8.1
+    ],
+    "hd": [
+     9.6,
+     9.6
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 25
+  },
+  {
+   "athleteId": "A1",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.8,
+     6.5,
+     7,
+     7.3
+    ],
+    "hd": [
+     9.9,
+     9.9
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.7
+  },
+  {
+   "athleteId": "B2",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.6,
+     6,
+     6.2,
+     7.2
+    ],
+    "hd": [
+     9.6,
+     9.4
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 22.3
+  },
+  {
+   "athleteId": "C2",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.7,
+     6.5,
+     6.7,
+     6.7
+    ],
+    "hd": [
+     9.8,
+     9.9
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.25
+  },
+  {
+   "athleteId": "D2",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.2,
+     6.5,
+     6.8,
+     6.8
+    ],
+    "hd": [
+     9.8,
+     9.8
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.4
+  },
+  {
+   "athleteId": "E3",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.3,
+     7,
+     7.1,
+     7.6
+    ],
+    "hd": [
+     9.7,
+     9.7
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.1
+  },
+  {
+   "athleteId": "A5",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.4,
+     7.8,
+     7.6,
+     7.6
+    ],
+    "hd": [
+     9.7,
+     9.6
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.85
+  },
+  {
+   "athleteId": "B3",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.9,
+     6.8,
+     6.5,
+     6.4
+    ],
+    "hd": [
+     9.8,
+     9.8
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.1
+  },
+  {
+   "athleteId": "C3",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     2.5,
+     2.3,
+     2.3,
+     2.4
+    ],
+    "hd": [
+     3.8,
+     3.8
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 4
+   },
+   "excelTotal": 8.5
+  },
+  {
+   "athleteId": "D3",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.7,
+     6.7,
+     6.5,
+     6.5
+    ],
+    "hd": [
+     10,
+     10
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.2
+  },
+  {
+   "athleteId": "E4",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.9,
+     7,
+     7.5,
+     7.2
+    ],
+    "hd": [
+     9.6,
+     9.5
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.25
+  },
+  {
+   "athleteId": "A8",
+   "round": "pflicht",
+   "excelPflichtDeduction": 4,
+   "score": {
+    "execution": [
+     2.8,
+     2.5,
+     2.5,
+     2.6
+    ],
+    "hd": [
+     4,
+     4
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 4
+   },
+   "excelTotal": 5.1
+  },
+  {
+   "athleteId": "B4",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.1,
+     7.4,
+     7.2,
+     7.3
+    ],
+    "hd": [
+     9.5,
+     9.6
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.05
+  },
+  {
+   "athleteId": "C4",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.9,
+     6.6,
+     6,
+     6.3
+    ],
+    "hd": [
+     9.8,
+     9.8
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 22.7
+  },
+  {
+   "athleteId": "D4",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.8,
+     6.7,
+     6,
+     6.7
+    ],
+    "hd": [
+     9.7,
+     9.8
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.15
+  },
+  {
+   "athleteId": "E5",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.6,
+     6.6,
+     6,
+     6.6
+    ],
+    "hd": [
+     9.7,
+     9.7
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 22.9
+  },
+  {
+   "athleteId": "A4",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.7,
+     7.3,
+     7,
+     7
+    ],
+    "hd": [
+     9.7,
+     9.6
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.95
+  },
+  {
+   "athleteId": "B5",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.1,
+     6.4,
+     6,
+     6.5
+    ],
+    "hd": [
+     9.9,
+     9.9
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 22.8
+  },
+  {
+   "athleteId": "C5",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.3,
+     7.7,
+     7.5,
+     7.8
+    ],
+    "hd": [
+     9.8,
+     9.8
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 25
+  },
+  {
+   "athleteId": "E6",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.1,
+     6.7,
+     6.4,
+     6.4
+    ],
+    "hd": [
+     9.2,
+     9.5
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 22.45
+  },
+  {
+   "athleteId": "A7",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.1,
+     6.9,
+     6.9,
+     7
+    ],
+    "hd": [
+     9.9,
+     9.9
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.8
+  },
+  {
+   "athleteId": "B6",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7,
+     6.5,
+     6.5,
+     6.3
+    ],
+    "hd": [
+     9.7,
+     9.7
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 22.7
+  },
+  {
+   "athleteId": "C6",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.1,
+     7.2,
+     7.3,
+     7.8
+    ],
+    "hd": [
+     9.8,
+     9.5
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.15
+  },
+  {
+   "athleteId": "E7",
+   "round": "pflicht",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7,
+     6.9,
+     6.4,
+     6.5
+    ],
+    "hd": [
+     9.7,
+     9.7
+    ],
+    "difficulty": 0,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.1
+  },
+  {
+   "athleteId": "A2",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     4.8,
+     4,
+     3.7,
+     4.2
+    ],
+    "hd": [
+     5.9,
+     5.9
+    ],
+    "difficulty": 0.5,
+    "otherDeduction": 0,
+    "completedElements": 6
+   },
+   "excelTotal": 14.6
+  },
+  {
+   "athleteId": "B1",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.5,
+     6.4,
+     6.1,
+     6.3
+    ],
+    "hd": [
+     9.7,
+     9.9
+    ],
+    "difficulty": 0.9,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.4
+  },
+  {
+   "athleteId": "C1",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.3,
+     7.3,
+     7.5,
+     7.2
+    ],
+    "hd": [
+     9.9,
+     9.6
+    ],
+    "difficulty": 1.5,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 25.85
+  },
+  {
+   "athleteId": "D1",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.8,
+     6.8,
+     6.7,
+     6.5
+    ],
+    "hd": [
+     9.4,
+     9.7
+    ],
+    "difficulty": 0.9,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.95
+  },
+  {
+   "athleteId": "E2",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.8,
+     6.6,
+     6.5,
+     6.5
+    ],
+    "hd": [
+     9.2,
+     9.3
+    ],
+    "difficulty": 2.2,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.55
+  },
+  {
+   "athleteId": "A3",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     3.4,
+     3.5,
+     3.4,
+     3.6
+    ],
+    "hd": [
+     5.6,
+     5.7
+    ],
+    "difficulty": 0.6,
+    "otherDeduction": 0,
+    "completedElements": 6
+   },
+   "excelTotal": 13.15
+  },
+  {
+   "athleteId": "B2",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.1,
+     6.6,
+     6.6,
+     6.8
+    ],
+    "hd": [
+     9.4,
+     9.2
+    ],
+    "difficulty": 0.9,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.6
+  },
+  {
+   "athleteId": "C2",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.9,
+     7,
+     7.2,
+     7.1
+    ],
+    "hd": [
+     9.2,
+     9.2
+    ],
+    "difficulty": 1.1,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.4
+  },
+  {
+   "athleteId": "D2",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     5.1,
+     5.2,
+     4.4,
+     5
+    ],
+    "hd": [
+     8.4,
+     8.4
+    ],
+    "difficulty": 0.7,
+    "otherDeduction": 0,
+    "completedElements": 9
+   },
+   "excelTotal": 19.2
+  },
+  {
+   "athleteId": "E3",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.7,
+     6.4,
+     6.2,
+     6.7
+    ],
+    "hd": [
+     8.7,
+     8.7
+    ],
+    "difficulty": 0.7,
+    "otherDeduction": 0,
+    "completedElements": 9
+   },
+   "excelTotal": 22.5
+  },
+  {
+   "athleteId": "A5",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.1,
+     7.2,
+     6.9,
+     7.4
+    ],
+    "hd": [
+     9.6,
+     9.5
+    ],
+    "difficulty": 1.8,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 25.65
+  },
+  {
+   "athleteId": "B3",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.5,
+     6.5,
+     6.9,
+     7.3
+    ],
+    "hd": [
+     9.8,
+     9.8
+    ],
+    "difficulty": 0.9,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.1
+  },
+  {
+   "athleteId": "C3",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.5,
+     6.5,
+     6.9,
+     7.3
+    ],
+    "hd": [
+     9.8,
+     9.8
+    ],
+    "difficulty": 0.9,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.1
+  },
+  {
+   "athleteId": "D3",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.7,
+     6.8,
+     6.4,
+     6.5
+    ],
+    "hd": [
+     9.9,
+     10
+    ],
+    "difficulty": 1.1,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.25
+  },
+  {
+   "athleteId": "E4",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     4.3,
+     4.4,
+     4.4,
+     4.4
+    ],
+    "hd": [
+     5.8,
+     5.7
+    ],
+    "difficulty": 0.5,
+    "otherDeduction": 0,
+    "completedElements": 6
+   },
+   "excelTotal": 15.05
+  },
+  {
+   "athleteId": "A8",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.1,
+     6,
+     5.6,
+     6
+    ],
+    "hd": [
+     9.9,
+     9.8
+    ],
+    "difficulty": 0.9,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 22.75
+  },
+  {
+   "athleteId": "B4",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.3,
+     6.4,
+     6.1,
+     6.8
+    ],
+    "hd": [
+     9.6,
+     9.5
+    ],
+    "difficulty": 1.9,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.15
+  },
+  {
+   "athleteId": "C4",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.6,
+     6.5,
+     6.1,
+     6.7
+    ],
+    "hd": [
+     9.3,
+     9.6
+    ],
+    "difficulty": 0.9,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.45
+  },
+  {
+   "athleteId": "D4",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.8,
+     6.8,
+     6.9,
+     7.3
+    ],
+    "hd": [
+     9.8,
+     9.7
+    ],
+    "difficulty": 0.9,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.35
+  },
+  {
+   "athleteId": "E5",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.8,
+     7,
+     7.1,
+     7.1
+    ],
+    "hd": [
+     9.9,
+     9.8
+    ],
+    "difficulty": 1.1,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 25.05
+  },
+  {
+   "athleteId": "A4",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     7.1,
+     7.2,
+     6.6,
+     7.5
+    ],
+    "hd": [
+     9.9,
+     9.9
+    ],
+    "difficulty": 0.9,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 25.1
+  },
+  {
+   "athleteId": "B5",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.4,
+     6.4,
+     6.3,
+     6.5
+    ],
+    "hd": [
+     9.7,
+     9.8
+    ],
+    "difficulty": 0.6,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.15
+  },
+  {
+   "athleteId": "C5",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.7,
+     7.3,
+     7,
+     6.9
+    ],
+    "hd": [
+     9.9,
+     9.9
+    ],
+    "difficulty": 2.8,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 26.6
+  },
+  {
+   "athleteId": "E6",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     5.8,
+     5.9,
+     6.4,
+     6.5
+    ],
+    "hd": [
+     9.8,
+     9.8
+    ],
+    "difficulty": 0.9,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23
+  },
+  {
+   "athleteId": "A7",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.5,
+     6.7,
+     6.4,
+     6.9
+    ],
+    "hd": [
+     9.9,
+     9.8
+    ],
+    "difficulty": 1.1,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 24.15
+  },
+  {
+   "athleteId": "B6",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.6,
+     6.7,
+     6.1,
+     6.4
+    ],
+    "hd": [
+     9.5,
+     9.3
+    ],
+    "difficulty": 0.9,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.3
+  },
+  {
+   "athleteId": "C6",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.9,
+     6.9,
+     6.5,
+     7.1
+    ],
+    "hd": [
+     9.8,
+     9.4
+    ],
+    "difficulty": 2.8,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 26.2
+  },
+  {
+   "athleteId": "E7",
+   "round": "kuer",
+   "excelPflichtDeduction": 0,
+   "score": {
+    "execution": [
+     6.7,
+     6.7,
+     6.4,
+     6.4
+    ],
+    "hd": [
+     9.4,
+     9.3
+    ],
+    "difficulty": 1.2,
+    "otherDeduction": 0,
+    "completedElements": 10
+   },
+   "excelTotal": 23.65
+  }
+ ],
+ "excelStartOrder": {
+  "pflicht": [
+   "A2",
+   "B1",
+   "C1",
+   "D1",
+   "E1",
+   "A1",
+   "B2",
+   "C2",
+   "D2",
+   "E3",
+   "A5",
+   "B3",
+   "C3",
+   "D3",
+   "E4",
+   "A8",
+   "B4",
+   "C4",
+   "D4",
+   "E5",
+   "A4",
+   "B5",
+   "C5",
+   "E6",
+   "A7",
+   "B6",
+   "C6",
+   "E7"
+  ],
+  "kuer": [
+   "A2",
+   "B1",
+   "C1",
+   "D1",
+   "E2",
+   "A3",
+   "B2",
+   "C2",
+   "D2",
+   "E3",
+   "A5",
+   "B3",
+   "C3",
+   "D3",
+   "E4",
+   "A8",
+   "B4",
+   "C4",
+   "D4",
+   "E5",
+   "A4",
+   "B5",
+   "C5",
+   "E6",
+   "A7",
+   "B6",
+   "C6",
+   "E7"
+  ]
+ }
+}

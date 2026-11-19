@@ -1,0 +1,84 @@
+name: Release
+ 
+# Ein Tag wie v1.2.0 baut den signierten Windows-Installer samt Update-Datei (latest.json)
+# und legt einen Release-Entwurf an. Erst wenn der Entwurf veröffentlicht wird, bekommen
+# die installierten Programme das Update angeboten. Ablauf: docs/RELEASE.md
+on:
+  push:
+    tags: ["v*.*.*"]
+ 
+permissions:
+  contents: write
+ 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+ 
+jobs:
+  windows:
+    runs-on: windows-latest
+    # Der Signaturschlüssel liegt als Secret in dieser Umgebung; dort ist sie auf v*-Tags beschränkt.
+    environment: release
+    steps:
+      - uses: actions/checkout@v4
+ 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+ 
+      - name: Tag und Programmversion vergleichen
+        shell: bash
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          if [ "v$version" != "$TAG" ]; then
+            echo "::error::Tag $TAG passt nicht zur Version $version in src-tauri/tauri.conf.json (npm run release:prepare vergessen?)"
+            exit 1
+          fi
+ 
+      - name: Öffentlichen Update-Schlüssel prüfen
+        shell: bash
+        run: |
+          if grep -q "HIER_DEN_OEFFENTLICHEN_SCHLUESSEL_EINTRAGEN" src-tauri/tauri.conf.json; then
+            echo "::error::In src-tauri/tauri.conf.json fehlt noch plugins.updater.pubkey (siehe docs/RELEASE.md)"
+            exit 1
+          fi
+ 
+      - name: Release-Text aus dem CHANGELOG
+        id: notes
+        shell: bash
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          node scripts/release-notes.mjs "$TAG" > release-notes.md
+          {
+            echo "body<<GVM_RELEASE_NOTES_EOF"
+            cat release-notes.md
+            echo "GVM_RELEASE_NOTES_EOF"
+          } >> "$GITHUB_OUTPUT"
+ 
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+ 
+      - run: npm ci
+      - run: npm test
+      - run: cargo test --manifest-path src-tauri/Cargo.toml
+ 
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: GVM Trampolin ${{ github.ref_name }}
+          releaseBody: ${{ steps.notes.outputs.body }}
+          releaseDraft: true
+          includeUpdaterJson: true
+          # Update-Paket und Signatur nur im Release-Build; lokal geht `npm run tauri build` ohne Schlüssel.
+          args: --config src-tauri/tauri.release.conf.json
+ 
