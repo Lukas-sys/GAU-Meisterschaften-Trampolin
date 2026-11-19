@@ -20,7 +20,7 @@ jobs:
     # Der Signaturschlüssel liegt als Secret in dieser Umgebung; dort ist sie auf v*-Tags beschränkt.
     environment: release
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
  
       - uses: actions/setup-node@v4
         with:
