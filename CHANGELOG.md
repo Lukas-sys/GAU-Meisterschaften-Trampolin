@@ -4,6 +4,8 @@ Alle wichtigen Änderungen an diesem Projekt. Format nach [Keep a Changelog](htt
 
 ## [Unveröffentlicht]
 
+## [1.0.0] – 2026-11-19
+
 ### Hinzugefügt
 - Projektgerüst als Desktop-Programm (Tauri 2, React, TypeScript) mit Windows-Installer-Build über GitHub Actions.
 - Rechenkern:
