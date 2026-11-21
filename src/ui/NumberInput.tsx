@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { formatNumberText as format, parseNumberText } from "../core";
+import { formatNumberText, parseNumberText } from "../core";
 
 interface Props {
   value: number | undefined;
@@ -11,6 +11,8 @@ interface Props {
   decimal?: boolean;
   /** „Ohne Komma tippen“: reine Ziffern zählen in Zehnteln (67 = 6,7). */
   tenths?: boolean;
+  /** Mindestens so viele Nachkommastellen anzeigen (1: 7 wird als „7,0“ angezeigt). */
+  minDecimals?: number;
 }
 
 /**
@@ -18,7 +20,8 @@ interface Props {
  * sofort wegformatiert. Gemeldet wird nur ein gültiger Wert oder undefined.
  * Beim Tippen bleibt der eingegebene Text stehen, beim Verlassen wird er formatiert.
  */
-export function NumberInput({ value, onChange, placeholder, ariaLabel, className, decimal, tenths }: Props) {
+export function NumberInput({ value, onChange, placeholder, ariaLabel, className, decimal, tenths, minDecimals = 0 }: Props) {
+  const format = (v: number | undefined) => formatNumberText(v, minDecimals);
   const [draft, setDraft] = useState(format(value));
   const parse = (text: string) => parseNumberText(text, { decimal, tenths });
 
@@ -42,7 +45,7 @@ export function NumberInput({ value, onChange, placeholder, ariaLabel, className
         // Öffnet sich ein Dialog (z. B. eine Warnung), bleibt der getippte Text stehen,
         // damit man danach einfach weitertippen kann.
         if (e.relatedTarget instanceof Element && e.relatedTarget.closest("dialog")) return;
-        setDraft(format(parse(draft) ?? value));
+        setDraft(format(value));
       }}
     />
   );

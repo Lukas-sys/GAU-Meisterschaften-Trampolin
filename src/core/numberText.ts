@@ -18,6 +18,14 @@ export function parseNumberText(text: string, { decimal = false, tenths = false 
   return n;
 }
 
-/** Zahl für ein Eingabefeld, mit Komma. */
-export const formatNumberText = (value: number | undefined): string =>
-  value === undefined ? "" : String(value).replace(".", ",");
+/**
+ * Zahl für ein Eingabefeld, mit Komma. `minDecimals: 1` zeigt ganze Zahlen als „7,0“: So steht
+ * in Notenfeldern immer ein Komma, und beim Tippen ohne Komma wird ein schon eingetragener Wert
+ * nicht noch einmal durch 10 geteilt.
+ */
+export function formatNumberText(value: number | undefined, minDecimals = 0): string {
+  if (value === undefined) return "";
+  const text = String(value);
+  const decimals = text.includes(".") ? text.split(".")[1].length : 0;
+  return (decimals >= minDecimals ? text : value.toFixed(minDecimals)).replace(".", ",");
+}

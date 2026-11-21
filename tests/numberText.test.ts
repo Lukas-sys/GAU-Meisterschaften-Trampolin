@@ -38,4 +38,19 @@ describe("formatNumberText", () => {
     expect(formatNumberText(10)).toBe("10");
     expect(formatNumberText(undefined)).toBe("");
   });
+
+  it("zeigt Notenfelder mit mindestens einer Nachkommastelle", () => {
+    expect(formatNumberText(7, 1)).toBe("7,0");
+    expect(formatNumberText(10, 1)).toBe("10,0");
+    expect(formatNumberText(6.7, 1)).toBe("6,7");
+    expect(formatNumberText(8.25, 1)).toBe("8,25");
+    expect(formatNumberText(0, 1)).toBe("0,0");
+  });
+
+  it("liest einen angezeigten Wert beim Tippen ohne Komma unverändert zurück", () => {
+    const tenths = { decimal: true, tenths: true };
+    for (const value of [7, 10, 6.7, 8.25, 0]) {
+      expect(parseNumberText(formatNumberText(value, 1), tenths)).toBe(value);
+    }
+  });
 });

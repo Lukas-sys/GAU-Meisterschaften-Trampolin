@@ -4,6 +4,10 @@ Alle wichtigen Änderungen an diesem Projekt. Format nach [Keep a Changelog](htt
 
 ## [Unveröffentlicht]
 
+### Behoben
+- Das Kontrollblatt erscheint in der Druckvorschau jetzt wirklich im Querformat.
+- Noten bei Haltung, HD und D stehen nach dem Eintragen immer mit Komma da (aus 70 wird 7,0, nicht 7). Springt man später mit Tab noch einmal durch die Felder, wird beim Tippen ohne Komma nichts versehentlich zu 0,7.
+
 ## [1.4.0] – 2026-11-21
 
 ### Hinzugefügt

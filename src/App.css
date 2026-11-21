@@ -858,18 +858,7 @@ td.has-deduction {
   .print-root .has-deduction {
     color: #000;
   }
-  /* Kontrollblatt: Querformat, Kästchen zum Mitschreiben von Hand. */
-  @page control {
-    size: A4 landscape;
-    margin: 12mm 10mm;
-    @bottom-right {
-      content: "Seite " counter(page) " von " counter(pages);
-      font-size: 8pt;
-    }
-  }
-  .print-page.control-sheet {
-    page: control;
-  }
+  /* Kontrollblatt: Kästchen zum Mitschreiben von Hand. Das Querformat setzt usePrint. */
   .print-root .control-table {
     font-size: 10pt;
   }

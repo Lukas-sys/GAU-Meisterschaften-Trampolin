@@ -166,6 +166,7 @@ export function RoutineSlide({
                   <NumberInput
                     decimal
                     tenths={inputTenths}
+                    minDecimals={1}
                     ariaLabel={`E${i + 1}`}
                     className={
                       entry.filledExecution?.includes(i) ? `${fieldClass(`E${i + 1}`)} filled` : fieldClass(`E${i + 1}`)
@@ -185,6 +186,7 @@ export function RoutineSlide({
                     <NumberInput
                       decimal
                       tenths={inputTenths}
+                      minDecimals={1}
                       ariaLabel={`HD${i + 1}`}
                       className={fieldClass(`HD${i + 1}`)}
                       value={entry.hd[i] ?? undefined}
@@ -201,6 +203,7 @@ export function RoutineSlide({
                 <NumberInput
                   decimal
                   tenths={inputTenths}
+                  minDecimals={1}
                   ariaLabel="D"
                   className={fieldClass("D")}
                   value={entry.difficulty}
