@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { version } from "../package.json";
 import { competitionYear, validateCompetition } from "./core";
-import { fileName } from "./platform";
+import { fileName, pickCompetitionSavePath } from "./platform";
 import { useBeamer } from "./state/useBeamer";
 import { useCompetitionFile, type SaveState } from "./state/useCompetitionFile";
 import { CompetitionPage, initialRunState, type RunState } from "./ui/CompetitionPage";
 import { useEditGuard } from "./ui/EditGuard";
+import { Modal } from "./ui/Modal";
 import { OverviewPage } from "./ui/OverviewPage";
 import { ResultsPage } from "./ui/ResultsPage";
 import { StartListsPage } from "./ui/StartListsPage";
@@ -30,6 +31,7 @@ const SAVE_LABELS: Record<SaveState, string> = {
   saved: "Gespeichert",
   pending: "Speichert …",
   error: "Speichern fehlgeschlagen",
+  conflict: "Nicht gespeichert",
 };
 
 export default function App() {
@@ -45,6 +47,9 @@ export default function App() {
   const competitionId = competition?.id;
   useEffect(() => setRunState(initialRunState), [competitionId]);
   const guard = useEditGuard(competition, file.update, page);
+  const [conflictDialog, setConflictDialog] = useState<"reload" | "close" | null>(null);
+  const [conflictError, setConflictError] = useState<string | null>(null);
+  useEffect(() => setConflictError(null), [path]);
 
   // Update-Hinweise liegen außerhalb der Seiten, damit sie beim Öffnen/Schließen erhalten bleiben.
   const notices = (
@@ -67,6 +72,29 @@ export default function App() {
   }
 
   const errorCount = validateCompetition(competition).filter((i) => i.severity === "error").length;
+  const inConflict = file.saveState === "conflict";
+
+  async function runConflictAction(action: () => Promise<void>) {
+    setConflictError(null);
+    try {
+      await action();
+      setConflictDialog(null);
+    } catch (error) {
+      setConflictError(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  const saveAsNewFile = () =>
+    runConflictAction(async () => {
+      const current = fileName(path).replace(/\.gvm$/i, "");
+      const target = await pickCompetitionSavePath(`${current} (eigener Stand)`);
+      if (target) await file.saveAs(target);
+    });
+
+  const closeCompetition = () => {
+    if (inConflict) setConflictDialog("close");
+    else void file.close();
+  };
 
   return (
     <div className="shell">
@@ -83,7 +111,7 @@ export default function App() {
           <span className={`save-state save-${file.saveState}`} title={file.saveError ?? undefined}>
             {SAVE_LABELS[file.saveState]}
           </span>
-          <button className="button-secondary" onClick={() => void file.close()}>
+          <button className="button-secondary" onClick={closeCompetition}>
             Wettkampf schließen
           </button>
         </div>
@@ -110,6 +138,68 @@ export default function App() {
           </span>
         )}
       </nav>
+      {inConflict && (
+        <div className="conflict-banner" role="alert">
+          <p className="tight">
+            <strong>Die Datei wurde außerhalb dieses Fensters geändert.</strong> Deine letzten Änderungen sind noch
+            nicht gespeichert.
+          </p>
+          <div className="conflict-actions">
+            <button onClick={() => void saveAsNewFile()}>Meinen Stand als neue Datei speichern …</button>
+            <button className="button-secondary" onClick={() => setConflictDialog("reload")}>
+              Datei neu laden
+            </button>
+          </div>
+          {conflictError && !conflictDialog && <p className="tight small">{conflictError}</p>}
+        </div>
+      )}
+      {conflictDialog === "reload" && (
+        <Modal
+          title="Datei neu laden?"
+          onClose={() => setConflictDialog(null)}
+          footer={
+            <>
+              <button className="button-secondary" autoFocus onClick={() => setConflictDialog(null)}>
+                Abbrechen
+              </button>
+              <button className="button-danger" onClick={() => void runConflictAction(file.reload)}>
+                Neu laden
+              </button>
+            </>
+          }
+        >
+          <p>
+            Geladen wird der Stand, der jetzt in der Datei steht. Deine nicht gespeicherten Änderungen in diesem Fenster
+            gehen dabei verloren.
+          </p>
+          {conflictError && <p className="alert alert-error small">{conflictError}</p>}
+        </Modal>
+      )}
+      {conflictDialog === "close" && (
+        <Modal
+          title="Wettkampf schließen?"
+          onClose={() => setConflictDialog(null)}
+          footer={
+            <>
+              <button className="button-secondary" autoFocus onClick={() => setConflictDialog(null)}>
+                Abbrechen
+              </button>
+              <button className="button-secondary" onClick={() => void saveAsNewFile()}>
+                Als neue Datei speichern …
+              </button>
+              <button className="button-danger" onClick={() => void runConflictAction(file.close)}>
+                Ohne Speichern schließen
+              </button>
+            </>
+          }
+        >
+          <p>
+            Deine letzten Änderungen sind nicht gespeichert, weil die Datei außerhalb dieses Fensters geändert wurde.
+            Beim Schließen ohne Speichern gehen sie verloren.
+          </p>
+          {conflictError && <p className="alert alert-error small">{conflictError}</p>}
+        </Modal>
+      )}
       <main className="page">
         {page === "overview" && <OverviewPage competition={competition} update={guard.update} />}
         {page === "teams" && <TeamsPage competition={competition} update={guard.update} />}

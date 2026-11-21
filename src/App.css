@@ -239,9 +239,29 @@ label.checkbox {
   font-size: 0.85rem;
   color: var(--muted);
 }
-.save-error {
+.save-error,
+.save-conflict {
   color: var(--danger);
   font-weight: 600;
+}
+/* Datei wurde woanders geändert: auffällig unter der Kopfzeile. */
+.conflict-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--error-bg);
+  color: var(--danger);
+  border-bottom: 2px solid var(--danger);
+}
+.conflict-banner > p:first-child {
+  flex: 1 1 24rem;
+}
+.conflict-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 .tabs {
   /* Bleibt beim Scrollen oben stehen; ohne Kopfzeile darüber mit Wettkampfname (compact). */

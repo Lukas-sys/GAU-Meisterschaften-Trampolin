@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { createCompetition } from "../core";
 import {
   fileName,
+  FileLockedError,
   forgetRecentFile,
   loadRecentFiles,
   pickCompetitionSavePath,
@@ -51,6 +52,8 @@ export function StartScreen({ file, version, onShowWhatsNew }: Props) {
       try {
         await file.openPath(path);
       } catch (e) {
+        // Woanders geöffnet heißt nicht, dass die Datei fehlt.
+        if (e instanceof FileLockedError) throw e;
         forgetRecentFile(path);
         setRecent(loadRecentFiles());
         throw e;
