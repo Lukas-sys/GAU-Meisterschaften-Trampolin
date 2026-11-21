@@ -277,15 +277,16 @@ export function ResultsPage({ competition, update, classId }: Props) {
             },
             {
               kind: "check",
-              key: "separators",
-              label: "Trennlinien zwischen den Turner:innen",
-              default: false,
-            },
-            {
-              kind: "check",
               key: "judges",
               label: "Kampfgericht mit Namen (wer welche Note gegeben hat)",
               default: true,
+              parent: "notes",
+            },
+            {
+              kind: "check",
+              key: "separators",
+              label: "Trennlinien zwischen den Turner:innen",
+              default: false,
             },
           ]}
           onPrint={printResults}

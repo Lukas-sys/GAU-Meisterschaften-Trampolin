@@ -3,12 +3,28 @@ import { Modal } from "./Modal";
 
 /** Eine Einstellung im Druckdialog: Haken oder Auswahl aus mehreren Möglichkeiten. */
 export type PrintOption =
-  | { kind: "check"; key: string; label: string; default: boolean }
+  | {
+      kind: "check";
+      key: string;
+      label: string;
+      default: boolean;
+      /** Unteroption: eingerückt, nur wählbar und wirksam, wenn der Haken `parent` gesetzt ist. */
+      parent?: string;
+    }
   | { kind: "choice"; key: string; label: string; default: string; choices: { value: string; label: string }[] };
 
 export type PrintSettings = Record<string, string | boolean>;
 
 const storageKey = (id: string) => `gvm.print.${id}`;
+
+/** Unteroptionen gelten nur, wenn ihr übergeordneter Haken gesetzt ist. */
+function effective(options: PrintOption[], settings: PrintSettings): PrintSettings {
+  const result = { ...settings };
+  for (const o of options) {
+    if (o.kind === "check" && o.parent && settings[o.parent] !== true) result[o.key] = false;
+  }
+  return result;
+}
 
 function loadSettings(id: string, options: PrintOption[]): PrintSettings {
   const defaults = Object.fromEntries(options.map((o) => [o.key, o.default]));
@@ -52,7 +68,7 @@ export function PrintDialog({
       // Merken ist nur Komfort.
     }
     onClose();
-    onPrint(settings);
+    onPrint(effective(options, settings));
   }
 
   return (
@@ -73,8 +89,13 @@ export function PrintDialog({
       <div className="print-options">
         {options.map((o) =>
           o.kind === "check" ? (
-            <label key={o.key} className="checkbox">
-              <input type="checkbox" checked={settings[o.key] === true} onChange={(e) => set(o.key, e.target.checked)} />
+            <label key={o.key} className={o.parent ? "checkbox print-suboption" : "checkbox"}>
+              <input
+                type="checkbox"
+                checked={settings[o.key] === true}
+                disabled={o.parent !== undefined && settings[o.parent] !== true}
+                onChange={(e) => set(o.key, e.target.checked)}
+              />
               {o.label}
             </label>
           ) : (

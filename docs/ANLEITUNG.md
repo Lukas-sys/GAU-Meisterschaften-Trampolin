@@ -98,7 +98,7 @@ Der Beamer folgt immer der Übung, die im Wettkampf gerade offen ist: Startnumme
 
 Endergebnis: Die Finalmannschaften nach Pflicht + Kür + Finale, danach die übrigen nach dem Vorkampf.
 
-- **Ergebnisliste drucken**: alle Mannschaften mit allen Einzelwertungen, die gewerteten fett. Im Druckdialog wählbar: Turner:innen, alle Einzelnoten, **Trennlinien zwischen den Turner:innen** und **Kampfgericht mit Namen** (wer welche Note gegeben hat, laut Einteilung in der Übersicht).
+- **Ergebnisliste drucken**: alle Mannschaften mit allen Einzelwertungen, die gewerteten fett. Im Druckdialog wählbar: Turner:innen, alle Einzelnoten, darunter **Kampfgericht mit Namen** (wer welche Note gegeben hat, laut Einteilung in der Übersicht; nur zusammen mit den Einzelnoten) und **Trennlinien zwischen den Turner:innen**.
 - **Siegerliste drucken**: Platzierungen für die Siegerehrung.
 - **Als Excel exportieren**: eine Excel-Datei mit dem Ergebnis je Klasse, allen Einzelwertungen, allen Übungen mit Noten und den Wettkampfangaben.
 

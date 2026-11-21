@@ -1410,6 +1410,12 @@ td.has-deduction {
   gap: 0.6rem;
   min-width: min(26rem, 80vw);
 }
+.print-suboption {
+  margin-left: 1.6rem;
+}
+.print-suboption:has(input:disabled) {
+  color: var(--muted);
+}
 .print-choice {
   display: flex;
   flex-direction: column;
