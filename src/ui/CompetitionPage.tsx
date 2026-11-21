@@ -4,6 +4,7 @@ import {
   classTeamOrder,
   formatPoints,
   getRoutine,
+  openRoutines,
   progressOf,
   BEAMER_MODE_LABELS,
   ROUND_LABELS,
@@ -322,26 +323,35 @@ function FinishDialog({
   onResults: () => void;
 }) {
   const open = rows.map((row, i) => ({ row, i })).filter(({ i }) => states[i] === "open" || states[i] === "incomplete");
-  const name = competition.classes[classId].name;
+  const config = competition.classes[classId];
+  const name = config.name;
 
-  // Durchgänge mit offenen Übungen: zuerst die nächsten der gleichen Klasse, dann die anderen Klassen.
-  const classIds = Object.keys(competition.classes) as ClassId[];
-  const ordered = [classId, ...classIds.filter((c) => c !== classId)];
-  const nextUp = ordered
-    .flatMap((c) =>
-      availableRounds(competition, c)
-        .filter((r) => !(c === classId && r === round))
-        .filter((r) =>
-          classStartList(competition, c, r).some((row) => {
-            const state = routineState(getRoutine(competition, r, row.athlete.id), competition.panel);
-            return state === "open" || state === "incomplete";
-          }),
-        )
-        .map((r) => ({ classId: c, round: r })),
-    )
-    .slice(0, 3);
-  const waitingForFinal =
-    competition.classes[classId].rounds.includes("finale") && !competition.finals?.[classId] && round !== "finale";
+  // Je nach gerade beendetem Durchgang genau ein naheliegender nächster Schritt.
+  type Action = { key: string; label: string; run: () => void };
+  const actions: Action[] = [];
+  const continueWith = (c: ClassId, r: RoundKind) =>
+    actions.push({
+      key: `${c}:${r}`,
+      label: c === classId ? `Weiter mit ${ROUND_LABELS[r]}` : `Weiter mit ${competition.classes[c].name} · ${ROUND_LABELS[r]}`,
+      run: () => onContinue(c, r),
+    });
+  const toResults = (label = "Zu den Ergebnissen") => actions.push({ key: "results", label, run: onResults });
+  // Pflicht der anderen Klassen, solange dort noch Übungen offen sind.
+  const otherPflicht = () =>
+    (Object.keys(competition.classes) as ClassId[])
+      .filter((c) => c !== classId && openRoutines(competition, c, "pflicht").length > 0)
+      .forEach((c) => continueWith(c, "pflicht"));
+
+  if (round === "pflicht" && config.rounds.includes("kuer")) {
+    continueWith(classId, "kuer");
+  } else if (round === "kuer" && config.rounds.includes("finale")) {
+    if (competition.finals?.[classId]) continueWith(classId, "finale");
+    else toResults("Zu den Ergebnissen (Finale bestätigen)");
+    otherPflicht();
+  } else {
+    toResults();
+    otherPflicht();
+  }
 
   return (
     <Modal
@@ -369,18 +379,12 @@ function FinishDialog({
         </div>
       )}
       <div className="finish-actions">
-        {nextUp.map((n) => (
-          <button key={`${n.classId}:${n.round}`} onClick={() => onContinue(n.classId, n.round)}>
-            Weiter mit {competition.classes[n.classId].name} · {ROUND_LABELS[n.round]}
+        {actions.map((action, i) => (
+          <button key={action.key} className={i === 0 ? undefined : "button-secondary"} onClick={action.run}>
+            {action.label}
           </button>
         ))}
-        <button className={nextUp.length > 0 ? "button-secondary" : undefined} onClick={onResults}>
-          Zu den Ergebnissen
-        </button>
       </div>
-      {waitingForFinal && open.length === 0 && (
-        <p className="muted small">Für das Finale die Finalisten unter „Ergebnisse“ bestätigen.</p>
-      )}
     </Modal>
   );
 }
