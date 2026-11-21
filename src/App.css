@@ -331,6 +331,24 @@ label.checkbox {
   color: var(--muted);
 }
 
+/* Klassenumschalter */
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.segmented button {
+  border: none;
+  border-radius: 0;
+  background: var(--surface);
+  color: var(--text);
+}
+.segmented button.active {
+  background: var(--primary);
+  color: #fff;
+}
+
 /* Klassenauswahl in der Reiterleiste. Jede Klasse hat eine Akzentfarbe, damit man nicht
    versehentlich in der falschen Klasse einträgt. */
 .class-accent-NK {
@@ -348,6 +366,7 @@ label.checkbox {
 }
 .tabs-classes button {
   padding: 0.3rem 0.75rem;
+  white-space: nowrap;
   box-shadow: inset 4px 0 0 var(--class-accent);
 }
 .tabs-classes button.active {
@@ -359,27 +378,13 @@ label.checkbox {
   font-weight: 400;
   opacity: 0.8;
 }
+/* Kompakte Leiste mit Wettkampfname: Anzahl weglassen, damit alles in eine Zeile passt. */
+.tabs.compact .tabs-class-count {
+  display: none;
+}
 /* Farbige Linie unter der Reiterleiste; bleibt beim Scrollen sichtbar. */
 .shell[class*="class-accent-"] > .tabs {
   border-bottom: 3px solid var(--class-accent);
-}
-
-/* Klassenumschalter */
-.segmented {
-  display: inline-flex;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  overflow: hidden;
-}
-.segmented button {
-  border: none;
-  border-radius: 0;
-  background: var(--surface);
-  color: var(--text);
-}
-.segmented button.active {
-  background: var(--primary);
-  color: #fff;
 }
 
 /* Tabellen */
@@ -831,6 +836,40 @@ td.has-deduction {
   }
   .print-root .has-deduction {
     color: #000;
+  }
+  /* Kontrollblatt: Querformat, Kästchen zum Mitschreiben von Hand. */
+  @page control {
+    size: A4 landscape;
+    margin: 12mm 10mm;
+    @bottom-right {
+      content: "Seite " counter(page) " von " counter(pages);
+      font-size: 8pt;
+    }
+  }
+  .print-page.control-sheet {
+    page: control;
+  }
+  .print-root .control-table {
+    font-size: 10pt;
+  }
+  .print-root .control-table td {
+    height: 10mm;
+    padding: 0 1.5mm;
+    border-bottom: 0.5px solid #888;
+  }
+  .print-root .control-table th.box-col {
+    text-align: center;
+  }
+  .print-root .control-table .box-col {
+    width: 13mm;
+    border-left: 0.5px solid #888;
+  }
+  .print-root .control-table .points-col {
+    width: 20mm;
+    border-left: 1.5px solid #000;
+  }
+  .print-root .control-table tr.block-start td {
+    border-top: 1.5px solid #000;
   }
 }
 

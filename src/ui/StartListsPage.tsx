@@ -12,6 +12,7 @@ import {
   type Competition,
   type RoundKind,
 } from "../core";
+import { controlSheetJobs, controlSheetOptions, PrintControlSheets } from "./PrintControlSheets";
 import { PrintDialog } from "./PrintDialog";
 import { PrintStartLists, START_LIST_PRINT_OPTIONS, startListColumns, type PrintJob } from "./PrintStartLists";
 import { StartListTable } from "./StartListTable";
@@ -49,6 +50,7 @@ export function StartListsPage({ competition, update, classId }: Props) {
   }, [competition, classId]);
 
   const [printJobs, setPrintJobs] = useState<PrintJob[] | null>(null);
+  const [printingControl, setPrintingControl] = useState(false);
   const print = (jobs: PrintJob[]) => setPrintJobs(jobs);
 
   function draw() {
@@ -201,6 +203,14 @@ export function StartListsPage({ competition, update, classId }: Props) {
             >
               Drucken
             </button>
+            <button
+              className="button-secondary"
+              disabled={ordered.length === 0}
+              onClick={() => setPrintingControl(true)}
+              title="Leere Tabelle zum Mitschreiben der Noten von Hand"
+            >
+              Kontrollblatt drucken
+            </button>
           </div>
           {ordered.length === 0 ? (
             <p className="empty">Die Startliste entsteht, sobald die Mannschaftsreihenfolge feststeht.</p>
@@ -227,6 +237,18 @@ export function StartListsPage({ competition, update, classId }: Props) {
           onPrint={(settings) =>
             printContent(<PrintStartLists competition={competition} jobs={printJobs} columns={startListColumns(settings)} />)
           }
+        />
+      )}
+      {printingControl && (
+        <PrintDialog
+          id="controlsheet"
+          title={`Kontrollblatt ${config.name} drucken`}
+          options={controlSheetOptions(rounds)}
+          onClose={() => setPrintingControl(false)}
+          onPrint={(settings) => {
+            const jobs = controlSheetJobs(classId, rounds, settings);
+            if (jobs.length > 0) printContent(<PrintControlSheets competition={competition} jobs={jobs} />);
+          }}
         />
       )}
       {portal}
