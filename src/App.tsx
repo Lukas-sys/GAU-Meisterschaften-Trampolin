@@ -213,7 +213,9 @@ export default function App() {
         </Modal>
       )}
       <main className="page">
-        {page === "overview" && <OverviewPage competition={competition} update={guard.update} />}
+        {page === "overview" && (
+          <OverviewPage competition={competition} update={guard.update} updateJudges={file.update} />
+        )}
         {page === "teams" && (
           <TeamsPage competition={competition} update={guard.update} classId={classId} setClassId={setClassId} />
         )}

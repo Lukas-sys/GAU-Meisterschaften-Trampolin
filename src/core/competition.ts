@@ -10,6 +10,8 @@ export interface Judge {
   id: string;
   name: string;
   club: string;
+  /** Platz im Kampfgericht, z. B. „E1“, „HD2“, „D“. Fehlt = nicht eingeteilt. */
+  seat?: string;
 }
 
 /** Mannschaftsreihenfolge einer Klasse, gilt für Pflicht und Kür. */

@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { newId, type ClassConfig, type ClassId, type Competition, type JudgePanel } from "../core";
+import {
+  assignJudgeSeat,
+  judgeOnSeat,
+  judgeSeats,
+  newId,
+  updateJudge,
+  type ClassConfig, type ClassId, type Competition, type JudgePanel } from "../core";
 import { CollapsibleCard } from "./CollapsibleCard";
 import { DeductionTableEditor } from "./DeductionTableEditor";
 import { NumberInput } from "./NumberInput";
@@ -9,7 +15,12 @@ interface Props {
   update: (change: (c: Competition) => Competition) => void;
 }
 
-export function OverviewPage({ competition, update }: Props) {
+interface OverviewProps extends Props {
+  /** Ohne Rückfrage „Wettkampf läuft bereits“: Kampfrichter:innen ändern Startlisten und Wertungen nicht. */
+  updateJudges: Props["update"];
+}
+
+export function OverviewPage({ competition, update, updateJudges }: OverviewProps) {
   const set = <K extends keyof Competition>(key: K, value: Competition[K]) =>
     update((c) => ({ ...c, [key]: value }));
   const setPanel = (change: Partial<JudgePanel>) =>
@@ -104,7 +115,7 @@ export function OverviewPage({ competition, update }: Props) {
             verdoppelt. Diese Regel ist noch mit dem Kampfgericht abzustimmen.
           </p>
         )}
-        <JudgesList competition={competition} update={update} />
+        <JudgesList competition={competition} update={updateJudges} />
       </CollapsibleCard>
 
       <DeductionTableEditor competition={competition} update={update} />
@@ -155,11 +166,20 @@ export function OverviewPage({ competition, update }: Props) {
 function JudgesList({ competition, update }: Props) {
   const [name, setName] = useState("");
   const [club, setClub] = useState("");
+  const seats = judgeSeats(competition.panel);
 
   function add() {
     if (!name.trim()) return;
     update((c) => ({ ...c, judges: [...c.judges, { id: newId(), name: name.trim(), club: club.trim() }] }));
     setName("");
+  }
+
+  function seat(seatId: string, judgeId: string) {
+    update((c) => {
+      if (judgeId) return assignJudgeSeat(c, judgeId, seatId);
+      const current = judgeOnSeat(c, seatId);
+      return current ? assignJudgeSeat(c, current.id, undefined) : c;
+    });
   }
 
   return (
@@ -169,9 +189,20 @@ function JudgesList({ competition, update }: Props) {
         <ul className="judges">
           {competition.judges.map((j) => (
             <li key={j.id}>
-              <span>
-                {j.name}
-                {j.club && <span className="muted"> · {j.club}</span>}
+              <input
+                aria-label="Name"
+                placeholder="Name"
+                value={j.name}
+                onChange={(e) => update((c) => updateJudge(c, j.id, { name: e.target.value }))}
+              />
+              <input
+                aria-label="Verein"
+                placeholder="Verein"
+                value={j.club}
+                onChange={(e) => update((c) => updateJudge(c, j.id, { club: e.target.value }))}
+              />
+              <span className="judge-seat muted small" title="Platz im Kampfgericht">
+                {j.seat && seats.includes(j.seat) ? j.seat : ""}
               </span>
               <button
                 className="icon-button"
@@ -191,6 +222,36 @@ function JudgesList({ competition, update }: Props) {
           Hinzufügen
         </button>
       </div>
+
+      <h3>Einteilung</h3>
+      {competition.judges.length === 0 ? (
+        <p className="muted small">Zuerst Kampfrichter:innen eintragen, dann hier die Plätze zuteilen.</p>
+      ) : (
+        <>
+          <div className="seat-grid">
+            {seats.map((seatId) => {
+              const current = judgeOnSeat(competition, seatId);
+              return (
+                <label key={seatId}>
+                  {seatId}
+                  <select value={current?.id ?? ""} onChange={(e) => seat(seatId, e.target.value)}>
+                    <option value="">frei</option>
+                    {competition.judges.map((j) => (
+                      <option key={j.id} value={j.id}>
+                        {j.name || "(ohne Namen)"}
+                        {j.seat && j.seat !== seatId && seats.includes(j.seat) ? ` (sitzt auf ${j.seat})` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              );
+            })}
+          </div>
+          <p className="muted small">
+            Jede Person hat einen Platz. Wer schon eingeteilt ist, wechselt beim Auswählen auf den neuen Platz.
+          </p>
+        </>
+      )}
     </>
   );
 }

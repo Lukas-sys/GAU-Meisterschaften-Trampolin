@@ -38,7 +38,7 @@ Rechts in der Reiterleiste steht die Klassenauswahl (Nachwuchsklasse / Offene Kl
 ## 2. Übersicht
 
 - **Wettkampf**: Name, Datum, Ort.
-- **Kampfgericht**: Anzahl der Haltungs-Kampfrichter:innen (bei 3 wird der Mittelwert der drei Noten als vierte Note ergänzt), HD-Kampfrichter:innen (0, 1 oder 2) und ob die Flugzeit (ToF) gewertet wird. Darunter die gemeldeten Kampfrichter:innen.
+- **Kampfgericht**: Anzahl der Haltungs-Kampfrichter:innen (bei 3 wird der Mittelwert der drei Noten als vierte Note ergänzt), HD-Kampfrichter:innen (0, 1 oder 2) und ob die Flugzeit (ToF) gewertet wird. Darunter die gemeldeten Kampfrichter:innen; Name und Verein lassen sich direkt im Feld korrigieren (auch während des Wettkampfs, ohne Rückfrage). Unter **Einteilung** wählst du für jeden Platz (E1, E2 …, HD1, HD2, D, ggf. ToF), wer dort sitzt. Jede Person hat einen Platz; wählst du jemanden aus, der schon eingeteilt ist, wechselt sie auf den neuen Platz. Die Einteilung steht auf dem Kontrollblatt, in der Ergebnisliste mit Einzelnoten, in der Excel-Datei und im Wettkampf als Hinweis an den Eingabefeldern.
 - **Klassen**: Einstellungen je Klasse, z. B. wie viele Wertungen je Durchgang zählen.
 - **Pflichtabzug**: Die Abzugstabelle aus der Ausschreibung (Mindest-Pflichtstufe je Alter, Abzug je Stufe, Höchstabzug). Ändert sich die Ausschreibung, wird sie hier angepasst. Die Vorschau zeigt die Tabelle nach Jahrgang wie in der Ausschreibung.
 

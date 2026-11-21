@@ -15,6 +15,7 @@ import {
   resultsWorkbook,
   routineBreakdown,
   routineState,
+  seatedJudges,
   teamLabel,
   VORKAMPF_ROUNDS,
   type Athlete,
@@ -105,6 +106,10 @@ export function ResultsPage({ competition, update, classId }: Props) {
                 <p className="print-legend">
                   Gestrichene Haltungsnoten in Klammern. * = fehlende Note, mit dem mittleren Wert ergänzt. „ab“ leer =
                   10.
+                  {seatedJudges(competition).length > 0 &&
+                    ` Kampfgericht: ${seatedJudges(competition)
+                      .map(({ seat, judge }) => `${seat} ${judge.name}`)
+                      .join(" · ")}.`}
                 </p>
               )}
             </section>

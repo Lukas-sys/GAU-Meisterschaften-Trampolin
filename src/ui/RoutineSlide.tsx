@@ -4,6 +4,7 @@ import {
   emptyRoutine,
   formatPoints,
   getRoutine,
+  judgeOnSeat,
   missingExecutionFill,
   ROUND_LABELS,
   ROUTINE_STATE_LABELS,
@@ -60,6 +61,8 @@ export function RoutineSlide({
   const issues = routineIssues(stored, panel);
   const deduction = routineDeduction(competition, athlete, round);
   const [confirmClear, setConfirmClear] = useState(false);
+  /** Name der eingeteilten Kampfrichter:in für ein Feld, als Hinweis. */
+  const judgeTitle = (seat: string) => judgeOnSeat(competition, seat)?.name || undefined;
   /** Fehlende Haltungsnote: wartet auf Bestätigung, danach geht es mit `then` weiter. */
   const [pendingFill, setPendingFill] = useState<{ index: number; value: number; then: () => void } | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -158,7 +161,7 @@ export function RoutineSlide({
             <fieldset>
               <legend>Haltung</legend>
               {Array.from({ length: panel.executionJudges }, (_, i) => (
-                <label key={i}>
+                <label key={i} title={judgeTitle(`E${i + 1}`)}>
                   E{i + 1}
                   <NumberInput
                     decimal
@@ -177,7 +180,7 @@ export function RoutineSlide({
               <fieldset>
                 <legend>HD</legend>
                 {Array.from({ length: panel.hdJudges }, (_, i) => (
-                  <label key={i}>
+                  <label key={i} title={judgeTitle(`HD${i + 1}`)}>
                     HD{i + 1}
                     <NumberInput
                       decimal
@@ -193,7 +196,7 @@ export function RoutineSlide({
             )}
             <fieldset>
               <legend>Weitere</legend>
-              <label>
+              <label title={judgeTitle("D")}>
                 D
                 <NumberInput
                   decimal
@@ -205,7 +208,7 @@ export function RoutineSlide({
                 />
               </label>
               {panel.timeOfFlight && (
-                <label>
+                <label title={judgeTitle("ToF")}>
                   ToF
                   <NumberInput
                     decimal

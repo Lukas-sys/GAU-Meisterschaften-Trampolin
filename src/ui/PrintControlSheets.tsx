@@ -1,4 +1,4 @@
-import { classStartList, ROUND_LABELS, teamLabel, type ClassId, type Competition, type RoundKind } from "../core";
+import { classStartList, judgeOnSeat, ROUND_LABELS, teamLabel, type ClassId, type Competition, type RoundKind } from "../core";
 import type { PrintOption, PrintSettings } from "./PrintDialog";
 import type { PrintJob } from "./PrintStartLists";
 import { PrintHeader } from "./usePrint";
@@ -37,6 +37,9 @@ export function PrintControlSheets({ competition, jobs }: { competition: Competi
                   {boxes.map((label) => (
                     <th key={label} className="box-col">
                       {label}
+                      {judgeOnSeat(competition, label) && (
+                        <span className="seat-name">{judgeOnSeat(competition, label)?.name}</span>
+                      )}
                     </th>
                   ))}
                   <th className="box-col points-col">Punkte</th>

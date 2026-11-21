@@ -9,6 +9,7 @@ Alle wichtigen Änderungen an diesem Projekt. Format nach [Keep a Changelog](htt
 - Vor jedem Speichern prüft das Programm, ob die Datei inzwischen woanders geändert wurde. Dann wird nicht überschrieben, sondern ein roter Hinweis erscheint: **Meinen Stand als neue Datei speichern …** oder **Datei neu laden**. So kann ein zweites Fenster mit veraltetem Stand keine Eingaben mehr löschen.
 - Wird in der Kür eingetragen, obwohl in der Pflicht derselben Klasse noch Übungen offen sind, fragt das Programm nach und nennt die offenen Startnummern: **Zur Pflicht** oder **Trotzdem eintragen**.
 - „Ohne Komma tippen“ im Wettkampf: Bei Haltung, HD und D wird aus 67 dann 6,7 und aus 100 dann 10. Mit Komma getippt gilt der Wert wie eingegeben. Die Einstellung wird gemerkt.
+- Kampfgericht in der Übersicht: Namen und Vereine der gemeldeten Kampfrichter:innen lassen sich direkt korrigieren, auch während des Wettkampfs ohne Rückfrage. Unter **Einteilung** wird festgelegt, wer E1, E2 …, HD1, HD2, D und ggf. ToF ist. Die Namen stehen auf dem Kontrollblatt unter den Spalten, in der Ergebnisliste mit Einzelnoten, im Excel-Blatt „Wettkampf“ und im Wettkampf als Hinweis an den Eingabefeldern (Maus darüber).
 - **Kontrollblatt drucken** bei den Startlisten: eine leere Tabelle je Durchgang in Startreihenfolge, im Querformat, mit Kästchen für alle Noten zum Mitschreiben von Hand. Als Sicherung, falls der Rechner ausfällt.
 
 ### Geändert

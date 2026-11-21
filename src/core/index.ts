@@ -17,3 +17,4 @@ export * from "./workbook";
 export * from "./beamer";
 export * from "./progress";
 export * from "./numberText";
+export * from "./judges";
