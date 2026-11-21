@@ -1413,9 +1413,6 @@ td.has-deduction {
 .print-suboption {
   margin-left: 1.6rem;
 }
-.print-suboption:has(input:disabled) {
-  color: var(--muted);
-}
 .print-choice {
   display: flex;
   flex-direction: column;

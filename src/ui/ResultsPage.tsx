@@ -280,7 +280,7 @@ export function ResultsPage({ competition, update, classId }: Props) {
               key: "judges",
               label: "Kampfgericht mit Namen (wer welche Note gegeben hat)",
               default: true,
-              parent: "notes",
+              sub: true,
             },
             {
               kind: "check",
