@@ -4,6 +4,8 @@ Alle wichtigen Änderungen an diesem Projekt. Format nach [Keep a Changelog](htt
 
 ## [Unveröffentlicht]
 
+## [1.4.0] – 2026-11-21
+
 ### Hinzugefügt
 - Eine Wettkampfdatei lässt sich nur noch in einem Fenster gleichzeitig öffnen. Versucht man es ein zweites Mal (auch von einem anderen Rechner über ein Netzlaufwerk), erscheint „Diese Datei ist bereits in einem anderen Fenster geöffnet“ mit Rechnername und Uhrzeit. Verschiedene Dateien in zwei Fenstern gehen weiterhin.
 - Vor jedem Speichern prüft das Programm, ob die Datei inzwischen woanders geändert wurde. Dann wird nicht überschrieben, sondern ein roter Hinweis erscheint: **Meinen Stand als neue Datei speichern …** oder **Datei neu laden**. So kann ein zweites Fenster mit veraltetem Stand keine Eingaben mehr löschen.

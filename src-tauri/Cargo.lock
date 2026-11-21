@@ -1353,7 +1353,7 @@ dependencies = [
 
 [[package]]
 name = "gvm-trampolin"
-version = "1.3.0"
+version = "1.4.0"
 dependencies = [
  "calamine",
  "rust_xlsxwriter",
