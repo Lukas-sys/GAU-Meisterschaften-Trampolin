@@ -247,7 +247,9 @@ export function StartListsPage({ competition, update, classId }: Props) {
           onClose={() => setPrintingControl(false)}
           onPrint={(settings) => {
             const jobs = controlSheetJobs(classId, rounds, settings);
-            if (jobs.length > 0) printContent(<PrintControlSheets competition={competition} jobs={jobs} />);
+            if (jobs.length > 0) printContent(
+                <PrintControlSheets competition={competition} jobs={jobs} showJudges={settings.judges === true} />,
+              );
           }}
         />
       )}

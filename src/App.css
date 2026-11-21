@@ -1219,6 +1219,11 @@ td.has-deduction {
 .results td.counted {
   font-weight: 700;
 }
+/* Optionale Trennlinien zwischen den Turner:innen */
+.results.with-separators tr.athlete-row + tr.athlete-row td,
+.results.with-separators tr.notes-row + tr.athlete-row td {
+  border-top: 1px solid var(--border);
+}
 .results td.not-counted {
   color: var(--muted);
 }
@@ -1246,6 +1251,10 @@ td.has-deduction {
   }
   .print-root .results td.not-counted {
     color: #666;
+  }
+  .print-root .results.with-separators tr.athlete-row + tr.athlete-row td,
+  .print-root .results.with-separators tr.notes-row + tr.athlete-row td {
+    border-top: 0.5px solid #999;
   }
   .print-root .results tbody {
     break-inside: avoid;

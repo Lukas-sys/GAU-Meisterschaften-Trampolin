@@ -60,7 +60,7 @@ Fehler in den Meldungen (doppelte Startplätze, fehlende Angaben, zu alte Turner
 - Nachmeldungen nach dem Losen werden erkannt und lassen sich **hinten anfügen**.
 - Die Startliste läuft reihum: erst Startplatz 1 aller Mannschaften, dann Startplatz 2 usw.
 - **Drucken** druckt die angezeigte Liste, **Alle Startlisten drucken** alle Klassen und Durchgänge, jede auf einer eigenen Seite. In der Druckvorschau kann auch „Als PDF speichern“ gewählt werden.
-- **Kontrollblatt drucken** druckt für die gewählte Klasse eine leere Tabelle in Startreihenfolge (Querformat) mit Kästchen für E1–E4, HD, D, ggf. ToF, Sonst., ab und Punkte, in der Pflicht dazu Stufe und Pflichtabzug. Im Dialog werden die Durchgänge gewählt. Gedacht zum Mitschreiben von Hand als Sicherung.
+- **Kontrollblatt drucken** druckt für die gewählte Klasse eine leere Tabelle in Startreihenfolge (Querformat) mit Kästchen für E1–E4, HD, D, ggf. ToF, Sonst., ab und Punkte, in der Pflicht dazu Stufe und Pflichtabzug. Im Dialog werden die Durchgänge gewählt und ob die Namen der Kampfrichter:innen unter den Spalten stehen sollen. Gedacht zum Mitschreiben von Hand als Sicherung.
 - Die Startliste fürs Finale erscheint erst, wenn die Finalisten bestätigt sind (siehe 6.).
 
 ## 5. Wettkampf
@@ -98,7 +98,7 @@ Der Beamer folgt immer der Übung, die im Wettkampf gerade offen ist: Startnumme
 
 Endergebnis: Die Finalmannschaften nach Pflicht + Kür + Finale, danach die übrigen nach dem Vorkampf.
 
-- **Ergebnisliste drucken**: alle Mannschaften mit allen Einzelwertungen, die gewerteten fett.
+- **Ergebnisliste drucken**: alle Mannschaften mit allen Einzelwertungen, die gewerteten fett. Im Druckdialog wählbar: Turner:innen, alle Einzelnoten, **Trennlinien zwischen den Turner:innen** und **Kampfgericht mit Namen** (wer welche Note gegeben hat, laut Einteilung in der Übersicht).
 - **Siegerliste drucken**: Platzierungen für die Siegerehrung.
 - **Als Excel exportieren**: eine Excel-Datei mit dem Ergebnis je Klasse, allen Einzelwertungen, allen Übungen mit Noten und den Wettkampfangaben.
 

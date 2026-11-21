@@ -101,15 +101,20 @@ export function ResultsPage({ competition, update, classId }: Props) {
                 classId={c.id}
                 showAthletes={settings.athletes === true || settings.notes === true}
                 showNotes={settings.notes === true}
+                separators={settings.separators === true}
               />
               {settings.notes === true && (
                 <p className="print-legend">
                   Gestrichene Haltungsnoten in Klammern. * = fehlende Note, mit dem mittleren Wert ergänzt. „ab“ leer =
                   10.
-                  {seatedJudges(competition).length > 0 &&
-                    ` Kampfgericht: ${seatedJudges(competition)
-                      .map(({ seat, judge }) => `${seat} ${judge.name}`)
-                      .join(" · ")}.`}
+                </p>
+              )}
+              {settings.judges === true && seatedJudges(competition).length > 0 && (
+                <p className="print-legend">
+                  Kampfgericht:{" "}
+                  {seatedJudges(competition)
+                    .map(({ seat, judge }) => `${seat} ${judge.name}`)
+                    .join(" · ")}
                 </p>
               )}
             </section>
@@ -268,6 +273,18 @@ export function ResultsPage({ competition, update, classId }: Props) {
               kind: "check",
               key: "notes",
               label: "Alle Einzelnoten (E1 bis E4, HD, D, Abzüge, ab)",
+              default: true,
+            },
+            {
+              kind: "check",
+              key: "separators",
+              label: "Trennlinien zwischen den Turner:innen",
+              default: false,
+            },
+            {
+              kind: "check",
+              key: "judges",
+              label: "Kampfgericht mit Namen (wer welche Note gegeben hat)",
               default: true,
             },
           ]}
@@ -455,6 +472,7 @@ function ResultsTable({
   classId,
   showAthletes = false,
   showNotes = false,
+  separators = false,
   onMoveTie,
 }: {
   competition: Competition;
@@ -463,6 +481,8 @@ function ResultsTable({
   showAthletes?: boolean;
   /** Unter jeder Turnerin / jedem Turner alle Einzelnoten je Durchgang. */
   showNotes?: boolean;
+  /** Linie zwischen den einzelnen Turner:innen, zur besseren Übersicht. */
+  separators?: boolean;
   onMoveTie?: (stage: TieStage, group: string[], teamId: string, delta: number) => void;
 }) {
   const config = competition.classes[classId];
@@ -474,7 +494,7 @@ function ResultsTable({
   const label = { pflicht: "Pflicht", kuer: "Kür", finale: "Finale" } as const;
 
   return (
-    <table className={["table results", showAthletes && "with-athletes", showNotes && "with-notes"].filter(Boolean).join(" ")}>
+    <table className={["table results", showAthletes && "with-athletes", showNotes && "with-notes", separators && "with-separators"].filter(Boolean).join(" ")}>
       <thead>
         <tr>
           <th className="num-col">Rang</th>

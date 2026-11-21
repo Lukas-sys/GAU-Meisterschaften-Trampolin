@@ -9,7 +9,16 @@ const formatScore = (v: number) => String(v).replace(".", ",");
  * Leere Kontrolltabelle zum Mitschreiben von Hand (Sicherung, falls der Rechner ausfällt):
  * je Klasse und Durchgang die Startreihenfolge mit leeren Kästchen für alle Noten. Querformat.
  */
-export function PrintControlSheets({ competition, jobs }: { competition: Competition; jobs: PrintJob[] }) {
+export function PrintControlSheets({
+  competition,
+  jobs,
+  showJudges = true,
+}: {
+  competition: Competition;
+  jobs: PrintJob[];
+  /** Namen der eingeteilten Kampfrichter:innen unter den Spaltenköpfen. */
+  showJudges?: boolean;
+}) {
   const { panel } = competition;
   const execution = Array.from({ length: panel.executionJudges }, (_, i) => `E${i + 1}`);
   const hd = Array.from({ length: panel.hdJudges }, (_, i) => `HD${i + 1}`);
@@ -37,7 +46,7 @@ export function PrintControlSheets({ competition, jobs }: { competition: Competi
                   {boxes.map((label) => (
                     <th key={label} className="box-col">
                       {label}
-                      {judgeOnSeat(competition, label) && (
+                      {showJudges && judgeOnSeat(competition, label) && (
                         <span className="seat-name">{judgeOnSeat(competition, label)?.name}</span>
                       )}
                     </th>
@@ -85,8 +94,10 @@ export function PrintControlSheets({ competition, jobs }: { competition: Competi
 const roundKey = (round: RoundKind) => `round_${round}`;
 
 /** Auswahl im Druckdialog: welche Durchgänge. */
-export const controlSheetOptions = (rounds: RoundKind[]): PrintOption[] =>
-  rounds.map((round) => ({ kind: "check", key: roundKey(round), label: ROUND_LABELS[round], default: true }));
+export const controlSheetOptions = (rounds: RoundKind[]): PrintOption[] => [
+  ...rounds.map((round): PrintOption => ({ kind: "check", key: roundKey(round), label: ROUND_LABELS[round], default: true })),
+  { kind: "check", key: "judges", label: "Namen der Kampfrichter:innen (laut Einteilung)", default: true },
+];
 
 export const controlSheetJobs = (classId: ClassId, rounds: RoundKind[], settings: PrintSettings): PrintJob[] =>
   rounds.filter((round) => settings[roundKey(round)] === true).map((round) => ({ classId, round }));
