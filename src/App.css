@@ -239,9 +239,29 @@ label.checkbox {
   font-size: 0.85rem;
   color: var(--muted);
 }
-.save-error {
+.save-error,
+.save-conflict {
   color: var(--danger);
   font-weight: 600;
+}
+/* Datei wurde woanders geändert: auffällig unter der Kopfzeile. */
+.conflict-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--error-bg);
+  color: var(--danger);
+  border-bottom: 2px solid var(--danger);
+}
+.conflict-banner > p:first-child {
+  flex: 1 1 24rem;
+}
+.conflict-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 .tabs {
   /* Bleibt beim Scrollen oben stehen; ohne Kopfzeile darüber mit Wettkampfname (compact). */
@@ -327,6 +347,44 @@ label.checkbox {
 .segmented button.active {
   background: var(--primary);
   color: #fff;
+}
+
+/* Klassenauswahl in der Reiterleiste. Jede Klasse hat eine Akzentfarbe, damit man nicht
+   versehentlich in der falschen Klasse einträgt. */
+.class-accent-NK {
+  --class-accent: #0f7b6c;
+}
+.class-accent-OK {
+  --class-accent: #a3470d;
+}
+.tabs-classes {
+  align-self: center;
+  margin-left: auto;
+}
+.tabs-classes + .tabs-save {
+  margin-left: 1rem;
+}
+.tabs-classes button {
+  padding: 0.3rem 0.75rem;
+  white-space: nowrap;
+  box-shadow: inset 4px 0 0 var(--class-accent);
+}
+.tabs-classes button.active {
+  background: var(--class-accent);
+  box-shadow: none;
+  font-weight: 600;
+}
+.tabs-class-count {
+  font-weight: 400;
+  opacity: 0.8;
+}
+/* Kompakte Leiste mit Wettkampfname: Anzahl weglassen, damit alles in eine Zeile passt. */
+.tabs.compact .tabs-class-count {
+  display: none;
+}
+/* Farbige Linie unter der Reiterleiste; bleibt beim Scrollen sichtbar. */
+.shell[class*="class-accent-"] > .tabs {
+  border-bottom: 3px solid var(--class-accent);
 }
 
 /* Tabellen */
@@ -439,11 +497,32 @@ li.warning {
 }
 .judges li {
   display: flex;
-  justify-content: space-between;
+  gap: 0.5rem;
   align-items: center;
   padding: 0.2rem 0;
   border-bottom: 1px solid #eef2f6;
-  max-width: 480px;
+  max-width: 640px;
+}
+.judges li input {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.judge-seat {
+  width: 2.5rem;
+  text-align: center;
+}
+/* Einteilung: je Platz eine Auswahl. */
+.seat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.5rem 0.75rem;
+  max-width: 900px;
+}
+.seat-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.85rem;
 }
 
 .import-header {
@@ -779,6 +858,48 @@ td.has-deduction {
   .print-root .has-deduction {
     color: #000;
   }
+  /* Kontrollblatt: Querformat, Kästchen zum Mitschreiben von Hand. */
+  @page control {
+    size: A4 landscape;
+    margin: 12mm 10mm;
+    @bottom-right {
+      content: "Seite " counter(page) " von " counter(pages);
+      font-size: 8pt;
+    }
+  }
+  .print-page.control-sheet {
+    page: control;
+  }
+  .print-root .control-table {
+    font-size: 10pt;
+  }
+  .print-root .control-table td {
+    height: 10mm;
+    padding: 0 1.5mm;
+    border-bottom: 0.5px solid #888;
+  }
+  .print-root .control-table th.box-col {
+    text-align: center;
+    vertical-align: bottom;
+  }
+  .print-root .control-table .seat-name {
+    display: block;
+    font-size: 6.5pt;
+    font-weight: 400;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+  .print-root .control-table .box-col {
+    width: 13mm;
+    border-left: 0.5px solid #888;
+  }
+  .print-root .control-table .points-col {
+    width: 20mm;
+    border-left: 1.5px solid #000;
+  }
+  .print-root .control-table tr.block-start td {
+    border-top: 1.5px solid #000;
+  }
 }
 
 .nowrap {
@@ -945,6 +1066,11 @@ td.has-deduction {
   background: var(--warning-bg);
   color: var(--warning);
 }
+.tenths-toggle {
+  align-self: flex-end;
+  margin-bottom: -0.6rem;
+  color: var(--muted);
+}
 .score-form {
   display: flex;
   flex-wrap: wrap;
@@ -1093,6 +1219,11 @@ td.has-deduction {
 .results td.counted {
   font-weight: 700;
 }
+/* Optionale Trennlinien zwischen den Turner:innen */
+.results.with-separators tr.athlete-row + tr.athlete-row td,
+.results.with-separators tr.notes-row + tr.athlete-row td {
+  border-top: 1px solid var(--border);
+}
 .results td.not-counted {
   color: var(--muted);
 }
@@ -1120,6 +1251,10 @@ td.has-deduction {
   }
   .print-root .results td.not-counted {
     color: #666;
+  }
+  .print-root .results.with-separators tr.athlete-row + tr.athlete-row td,
+  .print-root .results.with-separators tr.notes-row + tr.athlete-row td {
+    border-top: 0.5px solid #999;
   }
   .print-root .results tbody {
     break-inside: avoid;
@@ -1274,6 +1409,9 @@ td.has-deduction {
   flex-direction: column;
   gap: 0.6rem;
   min-width: min(26rem, 80vw);
+}
+.print-suboption {
+  margin-left: 1.6rem;
 }
 .print-choice {
   display: flex;

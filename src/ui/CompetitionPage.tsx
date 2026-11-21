@@ -4,6 +4,7 @@ import {
   classTeamOrder,
   formatPoints,
   getRoutine,
+  openRoutines,
   progressOf,
   BEAMER_MODE_LABELS,
   ROUND_LABELS,
@@ -32,17 +33,38 @@ interface Props {
   beamer: BeamerControl;
   runState: RunState;
   setRunState: Dispatch<SetStateAction<RunState>>;
+  /** Gewählte Klasse, gilt für alle Seiten (Umschalter in der Reiterleiste). */
+  classId: ClassId;
+  setClassId: (classId: ClassId) => void;
 }
 
-/** Wo im Wettkampfmodus man gerade ist: Klasse, Durchgang und Übung je Durchgang. */
+/** Wo im Wettkampfmodus man gerade ist: Durchgang und Übung je Durchgang (die Klasse ist global). */
 export interface RunState {
-  classId: ClassId;
   round: RoundKind;
   /** Position in der Startliste je „Klasse:Durchgang“. */
   positions: Record<string, number>;
 }
 
-export const initialRunState: RunState = { classId: "OK", round: "pflicht", positions: {} };
+export const initialRunState: RunState = { round: "pflicht", positions: {} };
+
+type Change = (c: Competition) => Competition;
+
+/** „Ohne Komma tippen“ wird pro Rechner gemerkt. */
+const INPUT_TENTHS_KEY = "gvm.inputTenths";
+function loadInputTenths(): boolean {
+  try {
+    return localStorage.getItem(INPUT_TENTHS_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+/** „Startnr. 4, 9, 12“; bei sehr vielen nur die ersten. */
+function startNumberList(rows: StartListRow[]): string {
+  const MAX = 12;
+  const numbers = rows.slice(0, MAX).map((row) => row.startNumber).join(", ");
+  return `Startnr. ${numbers}${rows.length > MAX ? " …" : ""}`;
+}
 
 const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLInputElement || target instanceof HTMLSelectElement || target instanceof HTMLTextAreaElement;
@@ -56,11 +78,12 @@ export function CompetitionPage({
   beamer,
   runState,
   setRunState,
+  classId,
+  setClassId,
 }: Props) {
   const [finished, setFinished] = useState(false);
-  // Liegt in App, damit Klasse, Durchgang und Übung beim Seitenwechsel erhalten bleiben.
-  const { classId, round: selectedRound, positions } = runState;
-  const setClassId = (next: ClassId) => setRunState((s) => ({ ...s, classId: next }));
+  // Liegt in App, damit Durchgang und Übung beim Seitenwechsel erhalten bleiben.
+  const { round: selectedRound, positions } = runState;
   const setRound = (next: RoundKind) => setRunState((s) => ({ ...s, round: next }));
   const setPositions = (change: (p: Record<string, number>) => Record<string, number>) =>
     setRunState((s) => ({ ...s, positions: change(s.positions) }));
@@ -97,6 +120,52 @@ export function CompetitionPage({
     setPositions((p) => ({ ...p, [viewKey]: Math.max(0, Math.min(rows.length - 1, next)) }));
   };
 
+  const [inputTenths, setInputTenths] = useState(loadInputTenths);
+  function changeInputTenths(on: boolean) {
+    setInputTenths(on);
+    try {
+      localStorage.setItem(INPUT_TENTHS_KEY, on ? "1" : "0");
+    } catch {
+      // Merken ist nur Komfort.
+    }
+  }
+
+  // Warnung, wenn in der Kür eingetragen wird, solange in der Pflicht derselben Klasse noch
+  // Übungen offen sind. Nach „Trotzdem eintragen“ nicht noch einmal, bis Klasse oder Durchgang wechseln.
+  const [kuerConfirmed, setKuerConfirmed] = useState(false);
+  const [pendingKuer, setPendingKuer] = useState<Change[] | null>(null);
+  /** Erzwingt eine frische Folie, wenn eine zurückgehaltene Eingabe verworfen wird. */
+  const [slideReset, setSlideReset] = useState(0);
+  useEffect(() => {
+    setKuerConfirmed(false);
+    setPendingKuer(null);
+  }, [classId, round]);
+  const pflichtOpen = round === "kuer" ? openRoutines(competition, classId, "pflicht") : [];
+  /** Eingabefeld, in dem getippt wurde; bekommt nach „Trotzdem eintragen“ den Fokus zurück. */
+  const focusBack = useRef<HTMLElement | null>(null);
+  const guardedUpdate = (change: Change) => {
+    if (round !== "kuer" || kuerConfirmed || pflichtOpen.length === 0) {
+      update(change);
+      return;
+    }
+    if (!pendingKuer) focusBack.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setPendingKuer((p) => [...(p ?? []), change]);
+  };
+  function goToPflicht() {
+    const pflichtRows = classStartList(competition, classId, "pflicht");
+    const first = pflichtOpen[0] ? pflichtRows.findIndex((row) => row.athlete.id === pflichtOpen[0].athlete.id) : 0;
+    setPendingKuer(null);
+    setRunState((s) => ({
+      ...s,
+      round: "pflicht",
+      positions: { ...s.positions, [`${classId}:pflicht`]: Math.max(0, first) },
+    }));
+  }
+  function discardPendingKuer() {
+    setPendingKuer(null);
+    setSlideReset((n) => n + 1);
+  }
+
   // Blättern per Tastatur, wenn gerade kein Eingabefeld aktiv ist; Bild auf/ab funktioniert immer.
   const indexRef = useRef(index);
   indexRef.current = index;
@@ -117,19 +186,6 @@ export function CompetitionPage({
   return (
     <div className="stack">
       <div className="toolbar">
-        <div className="segmented" role="tablist" aria-label="Klasse">
-          {Object.values(competition.classes).map((c) => (
-            <button
-              key={c.id}
-              role="tab"
-              aria-selected={c.id === classId}
-              className={c.id === classId ? "active" : ""}
-              onClick={() => setClassId(c.id)}
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
         <div className="segmented" role="tablist" aria-label="Durchgang">
           {rounds.map((r) => (
             <button
@@ -190,11 +246,13 @@ export function CompetitionPage({
           />
           <div className="run-main">
             <RoutineSlide
-              key={`${viewKey}:${current.athlete.id}`}
+              key={`${viewKey}:${current.athlete.id}:${slideReset}`}
               competition={competition}
               row={current}
               round={round}
-              update={update}
+              update={guardedUpdate}
+              inputTenths={inputTenths}
+              onInputTenthsChange={changeInputTenths}
               hasPrevious={index > 0}
               hasNext={index < rows.length - 1}
               onPrevious={() => goTo(index - 1)}
@@ -208,6 +266,37 @@ export function CompetitionPage({
           </div>
           <LiveTable competition={competition} classId={classId} round={round} highlightTeamId={current.team.id} />
         </div>
+      )}
+      {pendingKuer && (
+        <Modal
+          title="Pflicht noch nicht fertig"
+          onClose={discardPendingKuer}
+          footer={
+            <>
+              <button className="button-secondary" onClick={goToPflicht}>
+                Zur Pflicht
+              </button>
+              <button
+                autoFocus
+                onClick={() => {
+                  pendingKuer.forEach((change) => update(change));
+                  setPendingKuer(null);
+                  setKuerConfirmed(true);
+                  const target = focusBack.current;
+                  setTimeout(() => target?.focus(), 0);
+                }}
+              >
+                Trotzdem eintragen
+              </button>
+            </>
+          }
+        >
+          <p>
+            In der Pflicht der {competition.classes[classId].name}{" "}
+            {pflichtOpen.length === 1 ? "ist noch 1 Übung offen" : `sind noch ${pflichtOpen.length} Übungen offen`} (
+            {startNumberList(pflichtOpen)}). Normalerweise kommt zuerst die Pflicht.
+          </p>
+        </Modal>
       )}
       {finished && (
         <FinishDialog
@@ -223,7 +312,8 @@ export function CompetitionPage({
           }}
           onContinue={(nextClass, nextRound) => {
             setFinished(false);
-            setRunState((s) => ({ ...s, classId: nextClass, round: nextRound }));
+            setClassId(nextClass);
+            setRound(nextRound);
           }}
           onResults={() => {
             setFinished(false);
@@ -331,26 +421,35 @@ function FinishDialog({
   onResults: () => void;
 }) {
   const open = rows.map((row, i) => ({ row, i })).filter(({ i }) => states[i] === "open" || states[i] === "incomplete");
-  const name = competition.classes[classId].name;
+  const config = competition.classes[classId];
+  const name = config.name;
 
-  // Durchgänge mit offenen Übungen: zuerst die nächsten der gleichen Klasse, dann die anderen Klassen.
-  const classIds = Object.keys(competition.classes) as ClassId[];
-  const ordered = [classId, ...classIds.filter((c) => c !== classId)];
-  const nextUp = ordered
-    .flatMap((c) =>
-      availableRounds(competition, c)
-        .filter((r) => !(c === classId && r === round))
-        .filter((r) =>
-          classStartList(competition, c, r).some((row) => {
-            const state = routineState(getRoutine(competition, r, row.athlete.id), competition.panel);
-            return state === "open" || state === "incomplete";
-          }),
-        )
-        .map((r) => ({ classId: c, round: r })),
-    )
-    .slice(0, 3);
-  const waitingForFinal =
-    competition.classes[classId].rounds.includes("finale") && !competition.finals?.[classId] && round !== "finale";
+  // Je nach gerade beendetem Durchgang genau ein naheliegender nächster Schritt.
+  type Action = { key: string; label: string; run: () => void };
+  const actions: Action[] = [];
+  const continueWith = (c: ClassId, r: RoundKind) =>
+    actions.push({
+      key: `${c}:${r}`,
+      label: c === classId ? `Weiter mit ${ROUND_LABELS[r]}` : `Weiter mit ${competition.classes[c].name} · ${ROUND_LABELS[r]}`,
+      run: () => onContinue(c, r),
+    });
+  const toResults = (label = "Zu den Ergebnissen") => actions.push({ key: "results", label, run: onResults });
+  // Pflicht der anderen Klassen, solange dort noch Übungen offen sind.
+  const otherPflicht = () =>
+    (Object.keys(competition.classes) as ClassId[])
+      .filter((c) => c !== classId && openRoutines(competition, c, "pflicht").length > 0)
+      .forEach((c) => continueWith(c, "pflicht"));
+
+  if (round === "pflicht" && config.rounds.includes("kuer")) {
+    continueWith(classId, "kuer");
+  } else if (round === "kuer" && config.rounds.includes("finale")) {
+    if (competition.finals?.[classId]) continueWith(classId, "finale");
+    else toResults("Zu den Ergebnissen (Finale bestätigen)");
+    otherPflicht();
+  } else {
+    toResults();
+    otherPflicht();
+  }
 
   return (
     <Modal
@@ -378,18 +477,12 @@ function FinishDialog({
         </div>
       )}
       <div className="finish-actions">
-        {nextUp.map((n) => (
-          <button key={`${n.classId}:${n.round}`} onClick={() => onContinue(n.classId, n.round)}>
-            Weiter mit {competition.classes[n.classId].name} · {ROUND_LABELS[n.round]}
+        {actions.map((action, i) => (
+          <button key={action.key} className={i === 0 ? undefined : "button-secondary"} onClick={action.run}>
+            {action.label}
           </button>
         ))}
-        <button className={nextUp.length > 0 ? "button-secondary" : undefined} onClick={onResults}>
-          Zu den Ergebnissen
-        </button>
       </div>
-      {waitingForFinal && open.length === 0 && (
-        <p className="muted small">Für das Finale die Finalisten unter „Ergebnisse“ bestätigen.</p>
-      )}
     </Modal>
   );
 }

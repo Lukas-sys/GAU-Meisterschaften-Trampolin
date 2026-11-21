@@ -47,12 +47,79 @@ export async function readTextFile(path: string): Promise<string> {
   return invoke<string>("read_text_file", { path });
 }
 
-export async function writeTextFile(path: string, contents: string): Promise<void> {
+/** Inhalt einer Datei mit Fingerabdruck; im Browser gibt es keinen Fingerabdruck. */
+export interface VersionedText {
+  contents: string;
+  fingerprint: string | null;
+}
+
+export async function readTextFileVersioned(path: string): Promise<VersionedText> {
+  if (path.startsWith(BROWSER_PREFIX)) return { contents: await readTextFile(path), fingerprint: null };
+  return invoke<VersionedText>("read_text_file_versioned", { path });
+}
+
+/** Die Datei wurde außerhalb dieses Fensters geändert; es wurde nicht gespeichert. */
+export class SaveConflictError extends Error {}
+
+/** Die Datei ist schon in einem anderen Fenster (oder auf einem anderen Rechner) geöffnet. */
+export class FileLockedError extends Error {}
+
+const CONFLICT_PREFIX = "CONFLICT:";
+const LOCKED_PREFIX = "LOCKED:";
+
+/**
+ * Speichert eine Datei. Mit `expected` (Fingerabdruck vom letzten Laden/Speichern) nur dann,
+ * wenn sie seitdem niemand verändert hat, sonst SaveConflictError. Gibt den neuen Fingerabdruck zurück.
+ */
+export async function writeTextFile(path: string, contents: string, expected?: string | null): Promise<string | null> {
   if (path.startsWith(BROWSER_PREFIX)) {
     localStorage.setItem(path, contents);
-    return;
+    return null;
   }
-  await invoke("write_text_file", { path, contents });
+  try {
+    return await invoke<string>("write_text_file", { path, contents, expected: expected ?? null });
+  } catch (error) {
+    const message = String(error);
+    if (message.startsWith(CONFLICT_PREFIX)) throw new SaveConflictError(message.slice(CONFLICT_PREFIX.length));
+    throw error;
+  }
+}
+
+/** Text der Meldung, wenn die Datei woanders geöffnet ist; `owner` ist das JSON aus der Sperrdatei. */
+export function lockedMessage(owner: { host?: string; since?: number }): string {
+  const details = [
+    owner.host ? `Rechner ${owner.host}` : null,
+    owner.since
+      ? `seit ${new Date(owner.since).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`
+      : null,
+  ].filter(Boolean);
+  return `Diese Datei ist bereits in einem anderen Fenster geöffnet${details.length > 0 ? ` (${details.join(", ")})` : ""}.`;
+}
+
+/**
+ * Sperrt die Wettkampfdatei für dieses Fenster, damit sie kein zweites Fenster gleichzeitig
+ * öffnet. Ist sie woanders geöffnet: FileLockedError. Im Browser ohne Wirkung.
+ */
+export async function lockFile(path: string): Promise<void> {
+  if (path.startsWith(BROWSER_PREFIX)) return;
+  try {
+    await invoke("lock_file", { path });
+  } catch (error) {
+    const message = String(error);
+    if (!message.startsWith(LOCKED_PREFIX)) throw error;
+    let owner: { host?: string; since?: number } = {};
+    try {
+      owner = JSON.parse(message.slice(LOCKED_PREFIX.length));
+    } catch {
+      // Ohne Angaben zum anderen Fenster.
+    }
+    throw new FileLockedError(lockedMessage(owner));
+  }
+}
+
+export async function unlockFile(path: string): Promise<void> {
+  if (path.startsWith(BROWSER_PREFIX)) return;
+  await invoke("unlock_file", { path });
 }
 
 /**

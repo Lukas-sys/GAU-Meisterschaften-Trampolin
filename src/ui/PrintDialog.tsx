@@ -3,7 +3,14 @@ import { Modal } from "./Modal";
 
 /** Eine Einstellung im Druckdialog: Haken oder Auswahl aus mehreren Möglichkeiten. */
 export type PrintOption =
-  | { kind: "check"; key: string; label: string; default: boolean }
+  | {
+      kind: "check";
+      key: string;
+      label: string;
+      default: boolean;
+      /** Eingerückt unter der vorigen Option, um den Zusammenhang zu zeigen; bleibt einzeln wählbar. */
+      sub?: boolean;
+    }
   | { kind: "choice"; key: string; label: string; default: string; choices: { value: string; label: string }[] };
 
 export type PrintSettings = Record<string, string | boolean>;
@@ -73,7 +80,7 @@ export function PrintDialog({
       <div className="print-options">
         {options.map((o) =>
           o.kind === "check" ? (
-            <label key={o.key} className="checkbox">
+            <label key={o.key} className={o.sub ? "checkbox print-suboption" : "checkbox"}>
               <input type="checkbox" checked={settings[o.key] === true} onChange={(e) => set(o.key, e.target.checked)} />
               {o.label}
             </label>

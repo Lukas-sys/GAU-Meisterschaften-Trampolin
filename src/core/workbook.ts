@@ -5,6 +5,7 @@
 import { athletePflichtDeduction, teamLabel, type Competition } from "./competition";
 import { classStartList } from "./draw";
 import { classResults } from "./export";
+import { seatedJudges } from "./judges";
 import { roundScore } from "./math";
 import { completedElementsOf, getRoutine, ROUTINE_STATE_LABELS, routineBreakdown, routineState } from "./results";
 import type { ClassId, RoundKind } from "./types";
@@ -189,6 +190,10 @@ function infoSheet(competition: Competition): WorkbookSheet {
       ["Haltungs-Kampfrichter:innen", panel.executionJudges],
       ["HD-Kampfrichter:innen", panel.hdJudges],
       ["Flugzeit (ToF)", panel.timeOfFlight ? "ja" : "nein"],
+      ...seatedJudges(competition).map(({ seat, judge }): WorkbookCell[] => [
+        `Kampfgericht ${seat}`,
+        [judge.name, judge.club].filter(Boolean).join(", "),
+      ]),
       ...usedClasses(competition).map((c): WorkbookCell[] => [
         c.name,
         `${competition.teams.filter((t) => t.classId === c.id).length} Mannschaften`,

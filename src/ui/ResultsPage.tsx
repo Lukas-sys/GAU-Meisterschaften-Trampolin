@@ -15,6 +15,7 @@ import {
   resultsWorkbook,
   routineBreakdown,
   routineState,
+  seatedJudges,
   teamLabel,
   VORKAMPF_ROUNDS,
   type Athlete,
@@ -34,6 +35,8 @@ import { PrintHeader, usePrint } from "./usePrint";
 interface Props {
   competition: Competition;
   update: (change: (c: Competition) => Competition) => void;
+  /** Gewählte Klasse, gilt für alle Seiten (Umschalter in der Reiterleiste). */
+  classId: ClassId;
 }
 
 const formatDateTime = (iso: string) =>
@@ -54,8 +57,7 @@ function tieGroup(standings: TeamStanding[], standing: TeamStanding, points: (s:
   return standings.filter((s) => points(s) === points(standing)).map((s) => s.teamId);
 }
 
-export function ResultsPage({ competition, update }: Props) {
-  const [classId, setClassId] = useState<ClassId>("OK");
+export function ResultsPage({ competition, update, classId }: Props) {
   const [showAthletes, setShowAthletes] = useState(true);
   const [exportNote, setExportNote] = useState<string | null>(null);
   /** Von Hand geänderte Finalauswahl je Klasse; undefined = Vorschlag nach der Regel. */
@@ -99,11 +101,20 @@ export function ResultsPage({ competition, update }: Props) {
                 classId={c.id}
                 showAthletes={settings.athletes === true || settings.notes === true}
                 showNotes={settings.notes === true}
+                separators={settings.separators === true}
               />
               {settings.notes === true && (
                 <p className="print-legend">
                   Gestrichene Haltungsnoten in Klammern. * = fehlende Note, mit dem mittleren Wert ergänzt. „ab“ leer =
                   10.
+                </p>
+              )}
+              {settings.judges === true && seatedJudges(competition).length > 0 && (
+                <p className="print-legend">
+                  Kampfgericht:{" "}
+                  {seatedJudges(competition)
+                    .map(({ seat, judge }) => `${seat} ${judge.name}`)
+                    .join(" · ")}
                 </p>
               )}
             </section>
@@ -129,19 +140,6 @@ export function ResultsPage({ competition, update }: Props) {
   return (
     <div className="stack">
       <div className="toolbar">
-        <div className="segmented" role="tablist" aria-label="Klasse">
-          {Object.values(competition.classes).map((c) => (
-            <button
-              key={c.id}
-              role="tab"
-              aria-selected={c.id === classId}
-              className={c.id === classId ? "active" : ""}
-              onClick={() => setClassId(c.id)}
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
         <div className="spacer" />
         <button className="button-secondary" onClick={() => setPrintDialog(true)} disabled={competition.teams.length === 0}>
           Ergebnisliste drucken
@@ -276,6 +274,19 @@ export function ResultsPage({ competition, update }: Props) {
               key: "notes",
               label: "Alle Einzelnoten (E1 bis E4, HD, D, Abzüge, ab)",
               default: true,
+            },
+            {
+              kind: "check",
+              key: "judges",
+              label: "Kampfgericht mit Namen (wer welche Note gegeben hat)",
+              default: true,
+              sub: true,
+            },
+            {
+              kind: "check",
+              key: "separators",
+              label: "Trennlinien zwischen den Turner:innen",
+              default: false,
             },
           ]}
           onPrint={printResults}
@@ -462,6 +473,7 @@ function ResultsTable({
   classId,
   showAthletes = false,
   showNotes = false,
+  separators = false,
   onMoveTie,
 }: {
   competition: Competition;
@@ -470,6 +482,8 @@ function ResultsTable({
   showAthletes?: boolean;
   /** Unter jeder Turnerin / jedem Turner alle Einzelnoten je Durchgang. */
   showNotes?: boolean;
+  /** Linie zwischen den einzelnen Turner:innen, zur besseren Übersicht. */
+  separators?: boolean;
   onMoveTie?: (stage: TieStage, group: string[], teamId: string, delta: number) => void;
 }) {
   const config = competition.classes[classId];
@@ -481,7 +495,7 @@ function ResultsTable({
   const label = { pflicht: "Pflicht", kuer: "Kür", finale: "Finale" } as const;
 
   return (
-    <table className={["table results", showAthletes && "with-athletes", showNotes && "with-notes"].filter(Boolean).join(" ")}>
+    <table className={["table results", showAthletes && "with-athletes", showNotes && "with-notes", separators && "with-separators"].filter(Boolean).join(" ")}>
       <thead>
         <tr>
           <th className="num-col">Rang</th>

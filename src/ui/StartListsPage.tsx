@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   appendMissingTeams,
   classStartList,
@@ -12,6 +12,7 @@ import {
   type Competition,
   type RoundKind,
 } from "../core";
+import { controlSheetJobs, controlSheetOptions, PrintControlSheets } from "./PrintControlSheets";
 import { PrintDialog } from "./PrintDialog";
 import { PrintStartLists, START_LIST_PRINT_OPTIONS, startListColumns, type PrintJob } from "./PrintStartLists";
 import { StartListTable } from "./StartListTable";
@@ -20,6 +21,8 @@ import { usePrint } from "./usePrint";
 interface Props {
   competition: Competition;
   update: (change: (c: Competition) => Competition) => void;
+  /** Gewählte Klasse, gilt für alle Seiten (Umschalter in der Reiterleiste). */
+  classId: ClassId;
 }
 
 const formatDateTime = (iso: string) =>
@@ -29,10 +32,10 @@ const formatDateTime = (iso: string) =>
 export const availableRounds = (competition: Competition, classId: ClassId): RoundKind[] =>
   competition.classes[classId].rounds.filter((r) => r !== "finale" || competition.finals?.[classId] !== undefined);
 
-export function StartListsPage({ competition, update }: Props) {
-  const [classId, setClassId] = useState<ClassId>("OK");
+export function StartListsPage({ competition, update, classId }: Props) {
   const [selectedRound, setRound] = useState<RoundKind>("pflicht");
   const [confirmDraw, setConfirmDraw] = useState(false);
+  useEffect(() => setConfirmDraw(false), [classId]);
   const { print: printContent, portal } = usePrint();
   const rounds = availableRounds(competition, classId);
   const round = rounds.includes(selectedRound) ? selectedRound : rounds[0];
@@ -47,6 +50,7 @@ export function StartListsPage({ competition, update }: Props) {
   }, [competition, classId]);
 
   const [printJobs, setPrintJobs] = useState<PrintJob[] | null>(null);
+  const [printingControl, setPrintingControl] = useState(false);
   const print = (jobs: PrintJob[]) => setPrintJobs(jobs);
 
   function draw() {
@@ -73,22 +77,6 @@ export function StartListsPage({ competition, update }: Props) {
   return (
     <div className="stack">
       <div className="toolbar no-print">
-        <div className="segmented" role="tablist" aria-label="Klasse">
-          {Object.values(competition.classes).map((c) => (
-            <button
-              key={c.id}
-              role="tab"
-              aria-selected={c.id === classId}
-              className={c.id === classId ? "active" : ""}
-              onClick={() => {
-                setClassId(c.id);
-                setConfirmDraw(false);
-              }}
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
         <div className="spacer" />
         {anyOrdered && undrawnClasses.length > 0 && (
           <span className="muted small">
@@ -215,6 +203,14 @@ export function StartListsPage({ competition, update }: Props) {
             >
               Drucken
             </button>
+            <button
+              className="button-secondary"
+              disabled={ordered.length === 0}
+              onClick={() => setPrintingControl(true)}
+              title="Leere Tabelle zum Mitschreiben der Noten von Hand"
+            >
+              Kontrollblatt drucken
+            </button>
           </div>
           {ordered.length === 0 ? (
             <p className="empty">Die Startliste entsteht, sobald die Mannschaftsreihenfolge feststeht.</p>
@@ -241,6 +237,20 @@ export function StartListsPage({ competition, update }: Props) {
           onPrint={(settings) =>
             printContent(<PrintStartLists competition={competition} jobs={printJobs} columns={startListColumns(settings)} />)
           }
+        />
+      )}
+      {printingControl && (
+        <PrintDialog
+          id="controlsheet"
+          title={`Kontrollblatt ${config.name} drucken`}
+          options={controlSheetOptions(rounds)}
+          onClose={() => setPrintingControl(false)}
+          onPrint={(settings) => {
+            const jobs = controlSheetJobs(classId, rounds, settings);
+            if (jobs.length > 0) printContent(
+                <PrintControlSheets competition={competition} jobs={jobs} showJudges={settings.judges === true} />,
+              );
+          }}
         />
       )}
       {portal}
