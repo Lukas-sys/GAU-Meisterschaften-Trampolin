@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   appendMissingTeams,
   classStartList,
@@ -20,6 +20,8 @@ import { usePrint } from "./usePrint";
 interface Props {
   competition: Competition;
   update: (change: (c: Competition) => Competition) => void;
+  /** Gewählte Klasse, gilt für alle Seiten (Umschalter in der Reiterleiste). */
+  classId: ClassId;
 }
 
 const formatDateTime = (iso: string) =>
@@ -29,10 +31,10 @@ const formatDateTime = (iso: string) =>
 export const availableRounds = (competition: Competition, classId: ClassId): RoundKind[] =>
   competition.classes[classId].rounds.filter((r) => r !== "finale" || competition.finals?.[classId] !== undefined);
 
-export function StartListsPage({ competition, update }: Props) {
-  const [classId, setClassId] = useState<ClassId>("OK");
+export function StartListsPage({ competition, update, classId }: Props) {
   const [selectedRound, setRound] = useState<RoundKind>("pflicht");
   const [confirmDraw, setConfirmDraw] = useState(false);
+  useEffect(() => setConfirmDraw(false), [classId]);
   const { print: printContent, portal } = usePrint();
   const rounds = availableRounds(competition, classId);
   const round = rounds.includes(selectedRound) ? selectedRound : rounds[0];
@@ -73,22 +75,6 @@ export function StartListsPage({ competition, update }: Props) {
   return (
     <div className="stack">
       <div className="toolbar no-print">
-        <div className="segmented" role="tablist" aria-label="Klasse">
-          {Object.values(competition.classes).map((c) => (
-            <button
-              key={c.id}
-              role="tab"
-              aria-selected={c.id === classId}
-              className={c.id === classId ? "active" : ""}
-              onClick={() => {
-                setClassId(c.id);
-                setConfirmDraw(false);
-              }}
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
         <div className="spacer" />
         {anyOrdered && undrawnClasses.length > 0 && (
           <span className="muted small">

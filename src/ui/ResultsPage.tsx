@@ -34,6 +34,8 @@ import { PrintHeader, usePrint } from "./usePrint";
 interface Props {
   competition: Competition;
   update: (change: (c: Competition) => Competition) => void;
+  /** Gewählte Klasse, gilt für alle Seiten (Umschalter in der Reiterleiste). */
+  classId: ClassId;
 }
 
 const formatDateTime = (iso: string) =>
@@ -54,8 +56,7 @@ function tieGroup(standings: TeamStanding[], standing: TeamStanding, points: (s:
   return standings.filter((s) => points(s) === points(standing)).map((s) => s.teamId);
 }
 
-export function ResultsPage({ competition, update }: Props) {
-  const [classId, setClassId] = useState<ClassId>("OK");
+export function ResultsPage({ competition, update, classId }: Props) {
   const [showAthletes, setShowAthletes] = useState(true);
   const [exportNote, setExportNote] = useState<string | null>(null);
   /** Von Hand geänderte Finalauswahl je Klasse; undefined = Vorschlag nach der Regel. */
@@ -129,19 +130,6 @@ export function ResultsPage({ competition, update }: Props) {
   return (
     <div className="stack">
       <div className="toolbar">
-        <div className="segmented" role="tablist" aria-label="Klasse">
-          {Object.values(competition.classes).map((c) => (
-            <button
-              key={c.id}
-              role="tab"
-              aria-selected={c.id === classId}
-              className={c.id === classId ? "active" : ""}
-              onClick={() => setClassId(c.id)}
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
         <div className="spacer" />
         <button className="button-secondary" onClick={() => setPrintDialog(true)} disabled={competition.teams.length === 0}>
           Ergebnisliste drucken

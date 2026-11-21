@@ -32,17 +32,19 @@ interface Props {
   beamer: BeamerControl;
   runState: RunState;
   setRunState: Dispatch<SetStateAction<RunState>>;
+  /** Gewählte Klasse, gilt für alle Seiten (Umschalter in der Reiterleiste). */
+  classId: ClassId;
+  setClassId: (classId: ClassId) => void;
 }
 
-/** Wo im Wettkampfmodus man gerade ist: Klasse, Durchgang und Übung je Durchgang. */
+/** Wo im Wettkampfmodus man gerade ist: Durchgang und Übung je Durchgang (die Klasse ist global). */
 export interface RunState {
-  classId: ClassId;
   round: RoundKind;
   /** Position in der Startliste je „Klasse:Durchgang“. */
   positions: Record<string, number>;
 }
 
-export const initialRunState: RunState = { classId: "OK", round: "pflicht", positions: {} };
+export const initialRunState: RunState = { round: "pflicht", positions: {} };
 
 const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLInputElement || target instanceof HTMLSelectElement || target instanceof HTMLTextAreaElement;
@@ -56,11 +58,12 @@ export function CompetitionPage({
   beamer,
   runState,
   setRunState,
+  classId,
+  setClassId,
 }: Props) {
   const [finished, setFinished] = useState(false);
-  // Liegt in App, damit Klasse, Durchgang und Übung beim Seitenwechsel erhalten bleiben.
-  const { classId, round: selectedRound, positions } = runState;
-  const setClassId = (next: ClassId) => setRunState((s) => ({ ...s, classId: next }));
+  // Liegt in App, damit Durchgang und Übung beim Seitenwechsel erhalten bleiben.
+  const { round: selectedRound, positions } = runState;
   const setRound = (next: RoundKind) => setRunState((s) => ({ ...s, round: next }));
   const setPositions = (change: (p: Record<string, number>) => Record<string, number>) =>
     setRunState((s) => ({ ...s, positions: change(s.positions) }));
@@ -117,19 +120,6 @@ export function CompetitionPage({
   return (
     <div className="stack">
       <div className="toolbar">
-        <div className="segmented" role="tablist" aria-label="Klasse">
-          {Object.values(competition.classes).map((c) => (
-            <button
-              key={c.id}
-              role="tab"
-              aria-selected={c.id === classId}
-              className={c.id === classId ? "active" : ""}
-              onClick={() => setClassId(c.id)}
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
         <div className="segmented" role="tablist" aria-label="Durchgang">
           {rounds.map((r) => (
             <button
@@ -223,7 +213,8 @@ export function CompetitionPage({
           }}
           onContinue={(nextClass, nextRound) => {
             setFinished(false);
-            setRunState((s) => ({ ...s, classId: nextClass, round: nextRound }));
+            setClassId(nextClass);
+            setRound(nextRound);
           }}
           onResults={() => {
             setFinished(false);

@@ -331,6 +331,39 @@ label.checkbox {
   color: var(--muted);
 }
 
+/* Klassenauswahl in der Reiterleiste. Jede Klasse hat eine Akzentfarbe, damit man nicht
+   versehentlich in der falschen Klasse einträgt. */
+.class-accent-NK {
+  --class-accent: #0f7b6c;
+}
+.class-accent-OK {
+  --class-accent: #a3470d;
+}
+.tabs-classes {
+  align-self: center;
+  margin-left: auto;
+}
+.tabs-classes + .tabs-save {
+  margin-left: 1rem;
+}
+.tabs-classes button {
+  padding: 0.3rem 0.75rem;
+  box-shadow: inset 4px 0 0 var(--class-accent);
+}
+.tabs-classes button.active {
+  background: var(--class-accent);
+  box-shadow: none;
+  font-weight: 600;
+}
+.tabs-class-count {
+  font-weight: 400;
+  opacity: 0.8;
+}
+/* Farbige Linie unter der Reiterleiste; bleibt beim Scrollen sichtbar. */
+.shell[class*="class-accent-"] > .tabs {
+  border-bottom: 3px solid var(--class-accent);
+}
+
 /* Klassenumschalter */
 .segmented {
   display: inline-flex;

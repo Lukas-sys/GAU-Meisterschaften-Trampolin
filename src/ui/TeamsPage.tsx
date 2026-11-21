@@ -13,6 +13,9 @@ import { KnownClubs } from "./TeamFields";
 interface Props {
   competition: Competition;
   update: (change: (c: Competition) => Competition) => void;
+  /** Gewählte Klasse, gilt für alle Seiten (Umschalter in der Reiterleiste). */
+  classId: ClassId;
+  setClassId: (classId: ClassId) => void;
 }
 
 interface ClubGroup {
@@ -34,8 +37,7 @@ function groupByClub(teams: Team[]): ClubGroup[] {
   return [...groups.values()];
 }
 
-export function TeamsPage({ competition, update }: Props) {
-  const [classId, setClassId] = useState<ClassId>("OK");
+export function TeamsPage({ competition, update, classId, setClassId }: Props) {
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   const [creating, setCreating] = useState(false);
   const [importing, setImporting] = useState<{ loaded: PendingMeldung[]; failed: string[] } | null>(null);
@@ -83,22 +85,6 @@ export function TeamsPage({ competition, update }: Props) {
     <div className="stack">
       <KnownClubs competition={competition} />
       <div className="toolbar">
-        <div className="segmented" role="tablist" aria-label="Klasse">
-          {Object.values(competition.classes).map((config) => {
-            const count = competition.teams.filter((t) => t.classId === config.id).length;
-            return (
-              <button
-                key={config.id}
-                role="tab"
-                aria-selected={config.id === classId}
-                className={config.id === classId ? "active" : ""}
-                onClick={() => setClassId(config.id)}
-              >
-                {config.name} ({count})
-              </button>
-            );
-          })}
-        </div>
         <button onClick={() => setCreating(true)}>Neue Mannschaft anlegen</button>
         <div className="spacer" />
         {groups.length > 0 && (

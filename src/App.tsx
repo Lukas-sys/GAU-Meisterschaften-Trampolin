@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { version } from "../package.json";
-import { competitionYear, validateCompetition } from "./core";
+import { competitionYear, validateCompetition, type ClassId, type Competition } from "./core";
 import { fileName, pickCompetitionSavePath } from "./platform";
 import { useBeamer } from "./state/useBeamer";
 import { useCompetitionFile, type SaveState } from "./state/useCompetitionFile";
@@ -18,6 +18,9 @@ import { WhatsNewDialog } from "./ui/WhatsNewDialog";
 import "./App.css";
 
 type Page = "overview" | "teams" | "startlists" | "competition" | "results";
+
+/** Seiten, auf denen die Klassenauswahl in der Reiterleiste gilt. */
+const CLASS_PAGES: Page[] = ["teams", "startlists", "competition", "results"];
 
 const PAGES: { id: Page; label: string }[] = [
   { id: "overview", label: "Übersicht" },
@@ -44,8 +47,13 @@ export default function App() {
   const compact = useScrolledPast(headerRef, Boolean(competition));
   // Stelle im Wettkampfmodus; gilt bis der Wettkampf geschlossen wird.
   const [runState, setRunState] = useState<RunState>(initialRunState);
+  // Gewählte Klasse für Meldungen, Startlisten, Wettkampf und Ergebnisse; gilt bis zum Schließen.
+  const [selectedClass, setClassId] = useState<ClassId | null>(null);
   const competitionId = competition?.id;
-  useEffect(() => setRunState(initialRunState), [competitionId]);
+  useEffect(() => {
+    setRunState(initialRunState);
+    setClassId(null);
+  }, [competitionId]);
   const guard = useEditGuard(competition, file.update, page);
   const [conflictDialog, setConflictDialog] = useState<"reload" | "close" | null>(null);
   const [conflictError, setConflictError] = useState<string | null>(null);
@@ -72,6 +80,9 @@ export default function App() {
   }
 
   const errorCount = validateCompetition(competition).filter((i) => i.severity === "error").length;
+  const classIds = Object.keys(competition.classes) as ClassId[];
+  const classId = selectedClass && competition.classes[selectedClass] ? selectedClass : classIds[0];
+  const showClasses = CLASS_PAGES.includes(page);
   const inConflict = file.saveState === "conflict";
 
   async function runConflictAction(action: () => Promise<void>) {
@@ -97,7 +108,7 @@ export default function App() {
   };
 
   return (
-    <div className="shell">
+    <div className={showClasses ? `shell class-accent-${classId}` : "shell"}>
       <header className="shell-header" ref={headerRef}>
         <div>
           <h1>{competition.name || "Unbenannter Wettkampf"}</h1>
@@ -132,6 +143,7 @@ export default function App() {
             {p.id === "teams" && errorCount > 0 && <span className="badge">{errorCount}</span>}
           </button>
         ))}
+        {showClasses && <ClassSwitcher competition={competition} classId={classId} onChange={setClassId} />}
         {compact && (
           <span className={`save-state save-${file.saveState} tabs-save`} title={file.saveError ?? undefined}>
             {SAVE_LABELS[file.saveState]}
@@ -202,10 +214,16 @@ export default function App() {
       )}
       <main className="page">
         {page === "overview" && <OverviewPage competition={competition} update={guard.update} />}
-        {page === "teams" && <TeamsPage competition={competition} update={guard.update} />}
-        {page === "startlists" && <StartListsPage competition={competition} update={guard.update} />}
+        {page === "teams" && (
+          <TeamsPage competition={competition} update={guard.update} classId={classId} setClassId={setClassId} />
+        )}
+        {page === "startlists" && (
+          <StartListsPage competition={competition} update={guard.update} classId={classId} />
+        )}
         {guard.dialog}
-        {page === "results" && <ResultsPage competition={competition} update={file.update} />}
+        {page === "results" && (
+          <ResultsPage competition={competition} update={file.update} classId={classId} />
+        )}
         {page === "competition" && (
           <CompetitionPage
             competition={competition}
@@ -215,6 +233,8 @@ export default function App() {
             beamer={beamer}
             runState={runState}
             setRunState={setRunState}
+            classId={classId}
+            setClassId={setClassId}
           />
         )}
       </main>
@@ -225,6 +245,37 @@ export default function App() {
         </button>
       </footer>
       {notices}
+    </div>
+  );
+}
+
+/** Klassenauswahl in der Reiterleiste; jede Klasse hat eine eigene Akzentfarbe. */
+function ClassSwitcher({
+  competition,
+  classId,
+  onChange,
+}: {
+  competition: Competition;
+  classId: ClassId;
+  onChange: (classId: ClassId) => void;
+}) {
+  return (
+    <div className="segmented tabs-classes" role="tablist" aria-label="Klasse">
+      {Object.values(competition.classes).map((c) => {
+        const count = competition.teams.filter((t) => t.classId === c.id).length;
+        return (
+          <button
+            key={c.id}
+            role="tab"
+            aria-selected={c.id === classId}
+            className={c.id === classId ? `class-accent-${c.id} active` : `class-accent-${c.id}`}
+            onClick={() => onChange(c.id)}
+            title={`${count} ${count === 1 ? "Mannschaft" : "Mannschaften"}`}
+          >
+            {c.name} <span className="tabs-class-count">({count})</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
