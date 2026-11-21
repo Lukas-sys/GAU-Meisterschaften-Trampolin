@@ -47,6 +47,15 @@ export interface RunState {
 
 export const initialRunState: RunState = { round: "pflicht", positions: {} };
 
+type Change = (c: Competition) => Competition;
+
+/** „Startnr. 4, 9, 12“; bei sehr vielen nur die ersten. */
+function startNumberList(rows: StartListRow[]): string {
+  const MAX = 12;
+  const numbers = rows.slice(0, MAX).map((row) => row.startNumber).join(", ");
+  return `Startnr. ${numbers}${rows.length > MAX ? " …" : ""}`;
+}
+
 const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLInputElement || target instanceof HTMLSelectElement || target instanceof HTMLTextAreaElement;
 
@@ -100,6 +109,36 @@ export function CompetitionPage({
     if (rows.length === 0) return;
     setPositions((p) => ({ ...p, [viewKey]: Math.max(0, Math.min(rows.length - 1, next)) }));
   };
+
+  // Warnung, wenn in der Kür eingetragen wird, solange in der Pflicht derselben Klasse noch
+  // Übungen offen sind. Nach „Trotzdem eintragen“ nicht noch einmal, bis Klasse oder Durchgang wechseln.
+  const [kuerConfirmed, setKuerConfirmed] = useState(false);
+  const [pendingKuer, setPendingKuer] = useState<Change[] | null>(null);
+  /** Erzwingt eine frische Folie, wenn eine zurückgehaltene Eingabe verworfen wird. */
+  const [slideReset, setSlideReset] = useState(0);
+  useEffect(() => {
+    setKuerConfirmed(false);
+    setPendingKuer(null);
+  }, [classId, round]);
+  const pflichtOpen = round === "kuer" ? openRoutines(competition, classId, "pflicht") : [];
+  const guardedUpdate = (change: Change) => {
+    if (round !== "kuer" || kuerConfirmed || pflichtOpen.length === 0) update(change);
+    else setPendingKuer((p) => [...(p ?? []), change]);
+  };
+  function goToPflicht() {
+    const pflichtRows = classStartList(competition, classId, "pflicht");
+    const first = pflichtOpen[0] ? pflichtRows.findIndex((row) => row.athlete.id === pflichtOpen[0].athlete.id) : 0;
+    setPendingKuer(null);
+    setRunState((s) => ({
+      ...s,
+      round: "pflicht",
+      positions: { ...s.positions, [`${classId}:pflicht`]: Math.max(0, first) },
+    }));
+  }
+  function discardPendingKuer() {
+    setPendingKuer(null);
+    setSlideReset((n) => n + 1);
+  }
 
   // Blättern per Tastatur, wenn gerade kein Eingabefeld aktiv ist; Bild auf/ab funktioniert immer.
   const indexRef = useRef(index);
@@ -181,11 +220,11 @@ export function CompetitionPage({
           />
           <div className="run-main">
             <RoutineSlide
-              key={`${viewKey}:${current.athlete.id}`}
+              key={`${viewKey}:${current.athlete.id}:${slideReset}`}
               competition={competition}
               row={current}
               round={round}
-              update={update}
+              update={guardedUpdate}
               hasPrevious={index > 0}
               hasNext={index < rows.length - 1}
               onPrevious={() => goTo(index - 1)}
@@ -199,6 +238,35 @@ export function CompetitionPage({
           </div>
           <LiveTable competition={competition} classId={classId} round={round} highlightTeamId={current.team.id} />
         </div>
+      )}
+      {pendingKuer && (
+        <Modal
+          title="Pflicht noch nicht fertig"
+          onClose={discardPendingKuer}
+          footer={
+            <>
+              <button className="button-secondary" onClick={goToPflicht}>
+                Zur Pflicht
+              </button>
+              <button
+                autoFocus
+                onClick={() => {
+                  pendingKuer.forEach((change) => update(change));
+                  setPendingKuer(null);
+                  setKuerConfirmed(true);
+                }}
+              >
+                Trotzdem eintragen
+              </button>
+            </>
+          }
+        >
+          <p>
+            In der Pflicht der {competition.classes[classId].name}{" "}
+            {pflichtOpen.length === 1 ? "ist noch 1 Übung offen" : `sind noch ${pflichtOpen.length} Übungen offen`} (
+            {startNumberList(pflichtOpen)}). Normalerweise kommt zuerst die Pflicht.
+          </p>
+        </Modal>
       )}
       {finished && (
         <FinishDialog
