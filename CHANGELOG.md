@@ -4,6 +4,17 @@ Alle wichtigen Änderungen an diesem Projekt. Format nach [Keep a Changelog](htt
 
 ## [Unveröffentlicht]
 
+### Hinzugefügt
+- Eine Wettkampfdatei lässt sich nur noch in einem Fenster gleichzeitig öffnen. Versucht man es ein zweites Mal (auch von einem anderen Rechner über ein Netzlaufwerk), erscheint „Diese Datei ist bereits in einem anderen Fenster geöffnet“ mit Rechnername und Uhrzeit. Verschiedene Dateien in zwei Fenstern gehen weiterhin.
+- Vor jedem Speichern prüft das Programm, ob die Datei inzwischen woanders geändert wurde. Dann wird nicht überschrieben, sondern ein roter Hinweis erscheint: **Meinen Stand als neue Datei speichern …** oder **Datei neu laden**. So kann ein zweites Fenster mit veraltetem Stand keine Eingaben mehr löschen.
+- Wird in der Kür eingetragen, obwohl in der Pflicht derselben Klasse noch Übungen offen sind, fragt das Programm nach und nennt die offenen Startnummern: **Zur Pflicht** oder **Trotzdem eintragen**.
+- „Ohne Komma tippen“ im Wettkampf: Bei Haltung, HD und D wird aus 67 dann 6,7 und aus 100 dann 10. Mit Komma getippt gilt der Wert wie eingegeben. Die Einstellung wird gemerkt.
+- **Kontrollblatt drucken** bei den Startlisten: eine leere Tabelle je Durchgang in Startreihenfolge, im Querformat, mit Kästchen für alle Noten zum Mitschreiben von Hand. Als Sicherung, falls der Rechner ausfällt.
+
+### Geändert
+- Die Klasse wird jetzt einmal oben in der Reiterleiste gewählt und gilt für Meldungen, Startlisten, Wettkampf und Ergebnisse. Jede Klasse hat eine eigene Farbe, damit man nicht versehentlich in der falschen Klasse einträgt.
+- Der Dialog nach dem letzten Springer bietet nur noch den naheliegenden nächsten Schritt an: nach der Pflicht die Kür, nach der Kür das Finale oder das Bestätigen der Finalisten, nach dem Finale die Ergebnisse. Dazu die Pflicht der anderen Klasse, solange sie nicht fertig ist.
+
 ## [1.3.0] – 2026-11-19
 
 ### Hinzugefügt
