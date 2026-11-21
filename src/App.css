@@ -998,6 +998,11 @@ td.has-deduction {
   background: var(--warning-bg);
   color: var(--warning);
 }
+.tenths-toggle {
+  align-self: flex-end;
+  margin-bottom: -0.6rem;
+  color: var(--muted);
+}
 .score-form {
   display: flex;
   flex-wrap: wrap;

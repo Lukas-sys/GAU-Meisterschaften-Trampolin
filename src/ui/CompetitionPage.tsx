@@ -49,6 +49,16 @@ export const initialRunState: RunState = { round: "pflicht", positions: {} };
 
 type Change = (c: Competition) => Competition;
 
+/** „Ohne Komma tippen“ wird pro Rechner gemerkt. */
+const INPUT_TENTHS_KEY = "gvm.inputTenths";
+function loadInputTenths(): boolean {
+  try {
+    return localStorage.getItem(INPUT_TENTHS_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
 /** „Startnr. 4, 9, 12“; bei sehr vielen nur die ersten. */
 function startNumberList(rows: StartListRow[]): string {
   const MAX = 12;
@@ -109,6 +119,16 @@ export function CompetitionPage({
     if (rows.length === 0) return;
     setPositions((p) => ({ ...p, [viewKey]: Math.max(0, Math.min(rows.length - 1, next)) }));
   };
+
+  const [inputTenths, setInputTenths] = useState(loadInputTenths);
+  function changeInputTenths(on: boolean) {
+    setInputTenths(on);
+    try {
+      localStorage.setItem(INPUT_TENTHS_KEY, on ? "1" : "0");
+    } catch {
+      // Merken ist nur Komfort.
+    }
+  }
 
   // Warnung, wenn in der Kür eingetragen wird, solange in der Pflicht derselben Klasse noch
   // Übungen offen sind. Nach „Trotzdem eintragen“ nicht noch einmal, bis Klasse oder Durchgang wechseln.
@@ -225,6 +245,8 @@ export function CompetitionPage({
               row={current}
               round={round}
               update={guardedUpdate}
+              inputTenths={inputTenths}
+              onInputTenthsChange={changeInputTenths}
               hasPrevious={index > 0}
               hasNext={index < rows.length - 1}
               onPrevious={() => goTo(index - 1)}

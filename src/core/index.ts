@@ -16,3 +16,4 @@ export * from "./changelog";
 export * from "./workbook";
 export * from "./beamer";
 export * from "./progress";
+export * from "./numberText";

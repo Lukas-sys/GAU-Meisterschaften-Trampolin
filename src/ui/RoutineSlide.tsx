@@ -32,10 +32,25 @@ interface Props {
   onNext: () => void;
   /** Beim letzten Springer: statt „Weiter“ gibt es „Fertig“. */
   onFinish: () => void;
+  /** „Ohne Komma tippen“ für Haltung, HD und Schwierigkeit. */
+  inputTenths: boolean;
+  onInputTenthsChange: (on: boolean) => void;
 }
 
 /** Eine Folie: wer springt, Eingabe der Noten, sofort berechnete Punkte. */
-export function RoutineSlide({ competition, row, round, update, hasPrevious, hasNext, onPrevious, onNext, onFinish }: Props) {
+export function RoutineSlide({
+  competition,
+  row,
+  round,
+  update,
+  hasPrevious,
+  hasNext,
+  onPrevious,
+  onNext,
+  onFinish,
+  inputTenths,
+  onInputTenthsChange,
+}: Props) {
   const { athlete, team } = row;
   const panel = competition.panel;
   const stored = getRoutine(competition, round, athlete.id);
@@ -131,87 +146,99 @@ export function RoutineSlide({ competition, row, round, update, hasPrevious, has
           </button>
         </div>
       ) : (
-        <div className="score-form" ref={formRef} onKeyDown={onKeyDown}>
-          <fieldset>
-            <legend>Haltung</legend>
-            {Array.from({ length: panel.executionJudges }, (_, i) => (
-              <label key={i}>
-                E{i + 1}
-                <NumberInput
-                  decimal
-                  ariaLabel={`E${i + 1}`}
-                  className={
-                    entry.filledExecution?.includes(i) ? `${fieldClass(`E${i + 1}`)} filled` : fieldClass(`E${i + 1}`)
-                  }
-                  value={entry.execution[i] ?? undefined}
-                  onChange={(v) => setNote("execution", i, v)}
-                />
-              </label>
-            ))}
-          </fieldset>
-          {panel.hdJudges > 0 && (
+        <>
+          <label
+            className="checkbox small tenths-toggle"
+            title="Haltung, HD und D: 67 wird zu 6,7, 100 zu 10. Mit Komma getippt gilt der Wert wie eingegeben."
+          >
+            <input type="checkbox" checked={inputTenths} onChange={(e) => onInputTenthsChange(e.target.checked)} />
+            Ohne Komma tippen
+          </label>
+          <div className="score-form" ref={formRef} onKeyDown={onKeyDown}>
             <fieldset>
-              <legend>HD</legend>
-              {Array.from({ length: panel.hdJudges }, (_, i) => (
+              <legend>Haltung</legend>
+              {Array.from({ length: panel.executionJudges }, (_, i) => (
                 <label key={i}>
-                  HD{i + 1}
+                  E{i + 1}
                   <NumberInput
                     decimal
-                    ariaLabel={`HD${i + 1}`}
-                    className={fieldClass(`HD${i + 1}`)}
-                    value={entry.hd[i] ?? undefined}
-                    onChange={(v) => setNote("hd", i, v)}
+                    tenths={inputTenths}
+                    ariaLabel={`E${i + 1}`}
+                    className={
+                      entry.filledExecution?.includes(i) ? `${fieldClass(`E${i + 1}`)} filled` : fieldClass(`E${i + 1}`)
+                    }
+                    value={entry.execution[i] ?? undefined}
+                    onChange={(v) => setNote("execution", i, v)}
                   />
                 </label>
               ))}
             </fieldset>
-          )}
-          <fieldset>
-            <legend>Weitere</legend>
-            <label>
-              D
-              <NumberInput
-                decimal
-                ariaLabel="D"
-                className={fieldClass("D")}
-                value={entry.difficulty}
-                onChange={(v) => save({ difficulty: v })}
-              />
-            </label>
-            {panel.timeOfFlight && (
+            {panel.hdJudges > 0 && (
+              <fieldset>
+                <legend>HD</legend>
+                {Array.from({ length: panel.hdJudges }, (_, i) => (
+                  <label key={i}>
+                    HD{i + 1}
+                    <NumberInput
+                      decimal
+                      tenths={inputTenths}
+                      ariaLabel={`HD${i + 1}`}
+                      className={fieldClass(`HD${i + 1}`)}
+                      value={entry.hd[i] ?? undefined}
+                      onChange={(v) => setNote("hd", i, v)}
+                    />
+                  </label>
+                ))}
+              </fieldset>
+            )}
+            <fieldset>
+              <legend>Weitere</legend>
               <label>
-                ToF
+                D
                 <NumberInput
                   decimal
-                  ariaLabel="ToF"
-                  className={fieldClass("ToF")}
-                  value={entry.timeOfFlight}
-                  onChange={(v) => save({ timeOfFlight: v })}
+                  tenths={inputTenths}
+                  ariaLabel="D"
+                  className={fieldClass("D")}
+                  value={entry.difficulty}
+                  onChange={(v) => save({ difficulty: v })}
                 />
               </label>
-            )}
-            <label title="Sonstiger Abzug, positiv eintragen">
-              Sonst.
-              <NumberInput
-                decimal
-                ariaLabel="Sonstiger Abzug"
-                className={fieldClass("Sonst")}
-                value={entry.otherDeduction}
-                onChange={(v) => save({ otherDeduction: v })}
-              />
-            </label>
-            <label title="Anzahl gewerteter Sprünge, nur Information. Leer = 10.">
-              ab
-              <NumberInput
-                ariaLabel="ab"
-                placeholder={String(DEFAULT_COMPLETED_ELEMENTS)}
-                className={fieldClass("ab")}
-                value={entry.completedElements}
-                onChange={(v) => save({ completedElements: v })}
-              />
-            </label>
-          </fieldset>
-        </div>
+              {panel.timeOfFlight && (
+                <label>
+                  ToF
+                  <NumberInput
+                    decimal
+                    ariaLabel="ToF"
+                    className={fieldClass("ToF")}
+                    value={entry.timeOfFlight}
+                    onChange={(v) => save({ timeOfFlight: v })}
+                  />
+                </label>
+              )}
+              <label title="Sonstiger Abzug, positiv eintragen">
+                Sonst.
+                <NumberInput
+                  decimal
+                  ariaLabel="Sonstiger Abzug"
+                  className={fieldClass("Sonst")}
+                  value={entry.otherDeduction}
+                  onChange={(v) => save({ otherDeduction: v })}
+                />
+              </label>
+              <label title="Anzahl gewerteter Sprünge, nur Information. Leer = 10.">
+                ab
+                <NumberInput
+                  ariaLabel="ab"
+                  placeholder={String(DEFAULT_COMPLETED_ELEMENTS)}
+                  className={fieldClass("ab")}
+                  value={entry.completedElements}
+                  onChange={(v) => save({ completedElements: v })}
+                />
+              </label>
+            </fieldset>
+          </div>
+        </>
       )}
 
       {entry.filledExecution && entry.filledExecution.length > 0 && state !== "absent" && (
