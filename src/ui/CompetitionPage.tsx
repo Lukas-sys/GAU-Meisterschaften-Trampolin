@@ -141,9 +141,15 @@ export function CompetitionPage({
     setPendingKuer(null);
   }, [classId, round]);
   const pflichtOpen = round === "kuer" ? openRoutines(competition, classId, "pflicht") : [];
+  /** Eingabefeld, in dem getippt wurde; bekommt nach „Trotzdem eintragen“ den Fokus zurück. */
+  const focusBack = useRef<HTMLElement | null>(null);
   const guardedUpdate = (change: Change) => {
-    if (round !== "kuer" || kuerConfirmed || pflichtOpen.length === 0) update(change);
-    else setPendingKuer((p) => [...(p ?? []), change]);
+    if (round !== "kuer" || kuerConfirmed || pflichtOpen.length === 0) {
+      update(change);
+      return;
+    }
+    if (!pendingKuer) focusBack.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setPendingKuer((p) => [...(p ?? []), change]);
   };
   function goToPflicht() {
     const pflichtRows = classStartList(competition, classId, "pflicht");
@@ -276,6 +282,8 @@ export function CompetitionPage({
                   pendingKuer.forEach((change) => update(change));
                   setPendingKuer(null);
                   setKuerConfirmed(true);
+                  const target = focusBack.current;
+                  setTimeout(() => target?.focus(), 0);
                 }}
               >
                 Trotzdem eintragen

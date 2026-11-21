@@ -38,7 +38,12 @@ export function NumberInput({ value, onChange, placeholder, ariaLabel, className
         const parsed = parse(e.target.value);
         if (parsed !== undefined || e.target.value.trim() === "") onChange(parsed);
       }}
-      onBlur={() => setDraft(format(parse(draft) ?? value))}
+      onBlur={(e) => {
+        // Öffnet sich ein Dialog (z. B. eine Warnung), bleibt der getippte Text stehen,
+        // damit man danach einfach weitertippen kann.
+        if (e.relatedTarget instanceof Element && e.relatedTarget.closest("dialog")) return;
+        setDraft(format(parse(draft) ?? value));
+      }}
     />
   );
 }
